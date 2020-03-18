@@ -10,6 +10,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using SAMLPortal.Models;
 
 namespace SAMLPortal
 {
@@ -25,6 +27,7 @@ namespace SAMLPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<SAMLPortalContext>(opt => opt.UseInMemoryDatabase("SAMLPortal"));
             services.AddControllers();
         }
 
@@ -35,6 +38,9 @@ namespace SAMLPortal
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
 
             app.UseHttpsRedirection();
 
