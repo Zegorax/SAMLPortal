@@ -1,0 +1,23 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMLPortal", "SAMLPortal\SAMLPortal.csproj", "{EEA11EC3-9F66-4B90-A9E5-6D4BB3FB53F5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SAMLPortal.Tests", "SAMLPortal.Tests\SAMLPortal.Tests.csproj", "{69CF32FB-94EE-4C46-8F2E-FF7ECC8BEC63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EEA11EC3-9F66-4B90-A9E5-6D4BB3FB53F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEA11EC3-9F66-4B90-A9E5-6D4BB3FB53F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEA11EC3-9F66-4B90-A9E5-6D4BB3FB53F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEA11EC3-9F66-4B90-A9E5-6D4BB3FB53F5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69CF32FB-94EE-4C46-8F2E-FF7ECC8BEC63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69CF32FB-94EE-4C46-8F2E-FF7ECC8BEC63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69CF32FB-94EE-4C46-8F2E-FF7ECC8BEC63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69CF32FB-94EE-4C46-8F2E-FF7ECC8BEC63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
