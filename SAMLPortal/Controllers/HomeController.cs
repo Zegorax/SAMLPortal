@@ -20,7 +20,18 @@ namespace SAMLPortal.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            Console.WriteLine(GlobalSettings.IsConfigured);
+
+            if (!GlobalSettings.IsConfigured)
+            {
+                Console.WriteLine("HELLO");
+                return RedirectToAction("", "Setup");
+            }
+            else
+            {
+                return View();
+            }
+            
         }
 
         public IActionResult Privacy()

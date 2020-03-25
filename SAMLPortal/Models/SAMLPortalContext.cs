@@ -34,6 +34,8 @@ namespace SAMLPortal.Models
             OnModelCreatingPartial(modelBuilder);
         }
 
+        public DbSet<SAMLPortal.Models.Setup> Setup { get; set; }
+
         
     }
 }
