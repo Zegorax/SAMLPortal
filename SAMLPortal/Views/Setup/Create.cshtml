@@ -1,0 +1,97 @@
+@model SAMLPortal.Models.Setup
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Create</title>
+</head>
+<body>
+
+<h4>Setup</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CompanyName" class="control-label"></label>
+                <input asp-for="CompanyName" class="form-control" />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsConfigured" /> @Html.DisplayNameFor(model => model.IsConfigured)
+                </label>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="IsInMaintenance" /> @Html.DisplayNameFor(model => model.IsInMaintenance)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="LdapHost" class="control-label"></label>
+                <input asp-for="LdapHost" class="form-control" />
+                <span asp-validation-for="LdapHost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BindDn" class="control-label"></label>
+                <input asp-for="BindDn" class="form-control" />
+                <span asp-validation-for="BindDn" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BindPass" class="control-label"></label>
+                <input asp-for="BindPass" class="form-control" />
+                <span asp-validation-for="BindPass" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SearchBase" class="control-label"></label>
+                <input asp-for="SearchBase" class="form-control" />
+                <span asp-validation-for="SearchBase" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UsersFilter" class="control-label"></label>
+                <input asp-for="UsersFilter" class="form-control" />
+                <span asp-validation-for="UsersFilter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdministratorsFilter" class="control-label"></label>
+                <input asp-for="AdministratorsFilter" class="form-control" />
+                <span asp-validation-for="AdministratorsFilter" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UidAttr" class="control-label"></label>
+                <input asp-for="UidAttr" class="form-control" />
+                <span asp-validation-for="UidAttr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MemberOfAttr" class="control-label"></label>
+                <input asp-for="MemberOfAttr" class="form-control" />
+                <span asp-validation-for="MemberOfAttr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DisplayNameAttr" class="control-label"></label>
+                <input asp-for="DisplayNameAttr" class="form-control" />
+                <span asp-validation-for="DisplayNameAttr" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+</body>
+</html>

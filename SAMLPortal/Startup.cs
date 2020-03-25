@@ -1,28 +1,34 @@
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Pomelo.EntityFrameworkCore.MySql.Storage;
+using SAMLPortal.Misc;
 using SAMLPortal.Models;
 
 namespace SAMLPortal
 {
     public class Startup
     {
+        public IConfiguration Configuration { get; }
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-        }
+            GlobalSettings.RefreshSetupSettings();
 
-        public IConfiguration Configuration { get; }
+            if (!GlobalSettings.IsConfigured)
+            {
+                GlobalSettings.TemporaryPassword = Helpers.GenerateRandomPassword();
+                Console.WriteLine("To access SAMLPortal setup wizard, use this generated password : " + GlobalSettings.TemporaryPassword);
+            }
+            
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -62,6 +68,15 @@ namespace SAMLPortal
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            SAMLPortalContext context = new SAMLPortalContext();
+            if (!context.Setup.Any())
+            {
+                Setup initialSetup = new Setup();
+                initialSetup.IsConfigured = false;
+                context.Add(initialSetup);
+                context.SaveChanges();
+            }
 
             //App test = new App();
             //test.Name = "Gitlab";
