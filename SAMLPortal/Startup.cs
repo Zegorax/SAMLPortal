@@ -5,12 +5,12 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SAMLPortal.Models;
 
 namespace SAMLPortal
@@ -27,8 +27,13 @@ namespace SAMLPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SAMLPortalContext>(opt => opt.UseInMemoryDatabase("SAMLPortal"));
-            services.AddControllers();
+            services.AddControllersWithViews();
+            services.AddDbContext<SAMLPortalContext>(options =>
+                options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
+                        mysqlOptions =>
+                            mysqlOptions.ServerVersion(new ServerVersion(new Version(10,4,6), ServerType.MySql))
+                        )
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -38,11 +43,14 @@ namespace SAMLPortal
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
-
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseRouting();
 
@@ -50,8 +58,23 @@ namespace SAMLPortal
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            //App test = new App();
+            //test.Name = "Gitlab";
+            //test.Description = "An awesome GitHub alternative";
+            //test.Enabled = true;
+            //using (var context = new SAMLPortalContext())
+            //{
+            //    //context.Add(test);
+            //    //context.SaveChanges();
+            //    //Console.WriteLine("CHANGED");
+
+            //    var allApps = context.App.ToList();
+            //}
         }
     }
 }
