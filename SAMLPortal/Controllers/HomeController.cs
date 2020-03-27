@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using SAMLPortal.Misc;
 using SAMLPortal.Models;
 
 namespace SAMLPortal.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -18,22 +21,13 @@ namespace SAMLPortal.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public IActionResult Index()
         {
-            Console.WriteLine(GlobalSettings.IsConfigured);
-
-            if (!GlobalSettings.IsConfigured)
-            {
-                Console.WriteLine("HELLO");
-                return RedirectToAction("", "Setup");
-            }
-            else
-            {
-                return View();
-            }
-            
+            return View();
         }
 
+        [Authorize(Roles = UserRoles.User)]
         public IActionResult Privacy()
         {
             return View();
