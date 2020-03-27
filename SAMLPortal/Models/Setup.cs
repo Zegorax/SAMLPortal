@@ -8,6 +8,7 @@ namespace SAMLPortal.Models
         public virtual bool IsConfigured { get; set; }
         public virtual bool IsInMaintenance { get; set; }
         public virtual string LdapHost { get; set; }
+        public virtual int LdapPort { get; set; }
         public virtual string BindDn { get; set; }
         public virtual string BindPass { get; set; }
         public virtual string SearchBase { get; set; }

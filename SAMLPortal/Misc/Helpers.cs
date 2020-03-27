@@ -12,7 +12,7 @@ namespace SAMLPortal.Misc
         {
             if (opts == null) opts = new PasswordOptions()
             {
-                RequiredLength = 20,
+                RequiredLength = 40,
                 RequiredUniqueChars = 4,
                 RequireDigit = true,
                 RequireLowercase = true,
