@@ -21,15 +21,14 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
     <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+    <PackageReference Include="ITfoxtec.Identity.Saml2.MvcCore" Version="4.0.5" />
+    <PackageReference Include="DotNetEnv" Version="1.4.0" />
+    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.5" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Misc\" />
     <Folder Include="Services\" />
     <Folder Include="Views\Auth\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="appsettings.json" />
-    <Content Remove="appsettings.Development.json" />
-    <Content Remove="appsettings.json" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>

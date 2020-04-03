@@ -1,7 +1,10 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using ITfoxtec.Identity.Saml2;
+using ITfoxtec.Identity.Saml2.Util;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -30,13 +33,23 @@ namespace SAMLPortal
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.Configure<GlobalSettings>(Configuration.GetSection("GlobalSettings"));
             services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+
+            GlobalSettings.InitSettingsFromEnvironment();
+            GlobalSettings.GenerateSigningCertificate();
+
+            services.Configure<Saml2Configuration>(saml2Configuration =>
+            {
+                
+
+               //saml2Configuration.SigningCertificate = CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SigningCertificateFile"]), Configuration["Saml2:SigningCertificatePassword"]);
+                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
+            });
 
             services.AddAuthentication("SAMLPortal").AddCookie("SAMLPortal", options =>
             {
-                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/auth/login");
-                options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/auth/denied");
+                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Login");
+                options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Denied");
             });
 
             services.AddControllersWithViews();
@@ -83,24 +96,16 @@ namespace SAMLPortal
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}");
-
-                endpoints.MapControllerRoute(
-                    name: "auth/login",
-                    pattern: "{controller=Auth}/{action=Login}");
-
-                endpoints.MapControllerRoute(
-                    name: "auth/logout",
-                    pattern: "{controller=Auth}/{action=Logout}");
             });
 
-            SAMLPortalContext context = new SAMLPortalContext();
-            if (!context.Setup.Any())
-            {
-                Setup initialSetup = new Setup();
-                initialSetup.IsConfigured = false;
-                context.Add(initialSetup);
-                context.SaveChanges();
-            }
+            //SAMLPortalContext context = new SAMLPortalContext();
+            //if (!context.Setup.Any())
+            //{
+            //    Setup initialSetup = new Setup();
+            //    initialSetup.IsConfigured = false;
+            //    context.Add(initialSetup);
+            //    context.SaveChanges();
+            //}
 
             //App test = new App();
             //test.Name = "Gitlab";

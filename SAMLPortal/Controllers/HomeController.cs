@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,6 +31,8 @@ namespace SAMLPortal.Controllers
         [Authorize(Roles = UserRoles.User)]
         public IActionResult Privacy()
         {
+            ClaimsPrincipal currentUser = this.User;
+            var test = currentUser.FindFirst("displayName");
             return View();
         }
 
