@@ -8,8 +8,7 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
-SAMLPortal/appsettings.json
-
+SAMLPortal/.env
 # User-specific files
 *.rsuser
 *.suo
