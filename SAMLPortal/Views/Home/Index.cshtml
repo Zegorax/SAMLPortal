@@ -1,0 +1,16 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+    
+}
+
+@using System.Security.Claims;
+
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    @if (User.Identity.IsAuthenticated)
+    {
+        <div>Hello, @this.User.FindFirst(ClaimTypes.Name).Value</div>
+        <div>Your memberships : @this.User.FindAll("membership").Select(c => c.Value).ToList().ToString()</div>
+    }
+</div>
