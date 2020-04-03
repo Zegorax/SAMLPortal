@@ -31,4 +31,7 @@
     <Folder Include="Views\Auth\" />
     <Folder Include="Migrations\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include=".env.example" />
+  </ItemGroup>
 </Project>
