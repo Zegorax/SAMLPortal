@@ -1,8 +1,10 @@
-# SAMLPortal
-
 <h1 align="center">
-The bridge between LDAP and SAML with RBAC !
+SAMLPortal  
 </h1>
+
+<h2 align="center">
+The bridge between LDAP and SAML with RBAC !
+</h2>
 
 ## Introduction
 SAMLPortal is a web app designed for companies using a lot of self-hosted services. It act as a SAML IdP (Identity Provider) for your apps. It also doubles as welcome portal for users by presenting apps and categories for which the user has access to.
