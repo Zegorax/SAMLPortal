@@ -45,7 +45,7 @@ services:
     restart: always
     environment:
       LDAP_LOG_LEVEL: "256"
-      LDAP_ORGANISATION: "SAMLPortal"
+      LDAP_ORGANIZATION: "SAMLPortal"
       LDAP_DOMAIN: "saml.portal"
       LDAP_BASE_DN: ""
       #LDAP_ADMIN_PASSWORD: "admin"
