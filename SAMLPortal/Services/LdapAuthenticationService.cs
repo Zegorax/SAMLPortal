@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 using Novell.Directory.Ldap;
@@ -27,7 +27,6 @@ namespace SAMLPortal.Services
 			var userSearchFilter = string.Format(GlobalSettings.Get("LDAP_UsersFilter"), username);
 
 			List<string> filters = new List<string> { adminSearchFilter, userSearchFilter };
-			bool hasResults = false;
 
 			foreach (var filter in filters)
 			{
@@ -41,7 +40,6 @@ namespace SAMLPortal.Services
 
 				while (searchResults.HasMore())
 				{
-					hasResults = true;
 					try
 					{
 						var user = searchResults.Next();
