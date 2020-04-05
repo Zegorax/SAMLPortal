@@ -26,6 +26,8 @@ namespace SAMLPortal
 		public IConfiguration Configuration { get; }
 
 		public Startup(IConfiguration configuration)
+
+		
 		{
 			Configuration = configuration;
 		}
