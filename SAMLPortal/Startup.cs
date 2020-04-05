@@ -31,7 +31,7 @@ namespace SAMLPortal
 		}
 
 		// This method gets called by the runtime. Use this method to add services to the container.
-		public void ConfigureServices(IWebHostEnvironment env, IServiceCollection services)
+		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
 
@@ -41,14 +41,6 @@ namespace SAMLPortal
 					mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MySql))
 				)
 			);
-
-			if (env.IsDevelopment())
-			{
-				new SAMLPortalContext().Database.Migrate();
-			}
-
-			GlobalSettings.InitSettingsFromEnvironment();
-			GlobalSettings.GenerateSigningCertificate();
 
 			services.Configure<Saml2Configuration>(saml2Configuration =>
 			{
@@ -64,7 +56,6 @@ namespace SAMLPortal
 			});
 
 			services.AddControllersWithViews();
-
 
 			//var isAdminUserPolicy = new AuthorizationPolicyBuilder().RequireRole(UserRoles.Administrator).Build();
 			//services.AddMvc(options =>
@@ -83,7 +74,11 @@ namespace SAMLPortal
 			else
 			{
 				app.UseExceptionHandler("/Home/Error");
+				context.Database.Migrate();
 			}
+
+			GlobalSettings.InitSettingsFromEnvironment();
+			GlobalSettings.GenerateSigningCertificate();
 
 			app.UseStaticFiles();
 
