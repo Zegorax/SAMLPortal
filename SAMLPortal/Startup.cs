@@ -40,9 +40,9 @@ namespace SAMLPortal
 
             services.Configure<Saml2Configuration>(saml2Configuration =>
             {
-                
 
-               //saml2Configuration.SigningCertificate = CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SigningCertificateFile"]), Configuration["Saml2:SigningCertificatePassword"]);
+
+                //saml2Configuration.SigningCertificate = CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SigningCertificateFile"]), Configuration["Saml2:SigningCertificatePassword"]);
                 saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
             });
 
@@ -56,7 +56,7 @@ namespace SAMLPortal
             services.AddDbContext<SAMLPortalContext>(options =>
                 options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
                         mysqlOptions =>
-                            mysqlOptions.ServerVersion(new ServerVersion(new Version(10,4,6), ServerType.MySql))
+                            mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MySql))
                         )
             );
 
@@ -68,7 +68,7 @@ namespace SAMLPortal
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
         {
             if (env.IsDevelopment())
             {
@@ -77,13 +77,9 @@ namespace SAMLPortal
             else
             {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                context.Database.Migrate();
             }
 
-            
-
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
