@@ -27,7 +27,7 @@ services:
       SP_MYSQL_DB: samlportal
       SP_MYSQL_USER: samlportal
       SP_MYSQL_PASS: samlportal
-      SP_FORCE_ENV_REPOPUL: 0
+      SP_FORCE_ENV_REPOPUL: 1
 
   db:
     image: mysql:latest
