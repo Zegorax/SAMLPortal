@@ -21,100 +21,100 @@ using SAMLPortal.Services;
 
 namespace SAMLPortal
 {
-    public class Startup
-    {
-        public IConfiguration Configuration { get; }
+	public class Startup
+	{
+		public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+		public Startup(IConfiguration configuration)
+		{
+			Configuration = configuration;
+		}
 
-        // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
-        {
-            services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+		// This method gets called by the runtime. Use this method to add services to the container.
+		public void ConfigureServices(IServiceCollection services)
+		{
+			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
 
-            GlobalSettings.InitSettingsFromEnvironment();
-            GlobalSettings.GenerateSigningCertificate();
+			services.AddDbContext<SAMLPortalContext>(options =>
+				options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
+					mysqlOptions =>
+					mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MySql))
+				)
+			);
 
-            services.Configure<Saml2Configuration>(saml2Configuration =>
-            {
+			services.Configure<Saml2Configuration>(saml2Configuration =>
+			{
 
+				//saml2Configuration.SigningCertificate = CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SigningCertificateFile"]), Configuration["Saml2:SigningCertificatePassword"]);
+				saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
+			});
 
-                //saml2Configuration.SigningCertificate = CertificateUtil.Load(AppEnvironment.MapToPhysicalFilePath(Configuration["Saml2:SigningCertificateFile"]), Configuration["Saml2:SigningCertificatePassword"]);
-                saml2Configuration.AllowedAudienceUris.Add(saml2Configuration.Issuer);
-            });
+			services.AddAuthentication("SAMLPortal").AddCookie("SAMLPortal", options =>
+			{
+				options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Login");
+				options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Denied");
+			});
 
-            services.AddAuthentication("SAMLPortal").AddCookie("SAMLPortal", options =>
-            {
-                options.LoginPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Login");
-                options.AccessDeniedPath = new Microsoft.AspNetCore.Http.PathString("/Auth/Denied");
-            });
+			services.AddControllersWithViews();
 
-            services.AddControllersWithViews();
-            services.AddDbContext<SAMLPortalContext>(options =>
-                options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
-                        mysqlOptions =>
-                            mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MySql))
-                        )
-            );
+			//var isAdminUserPolicy = new AuthorizationPolicyBuilder().RequireRole(UserRoles.Administrator).Build();
+			//services.AddMvc(options =>
+			//{
+			//    options.Filters.Add(new ApplyPolicyOrAuthorizeFilter(isAdminUserPolicy));
+			//});
+		}
 
-            //var isAdminUserPolicy = new AuthorizationPolicyBuilder().RequireRole(UserRoles.Administrator).Build();
-            //services.AddMvc(options =>
-            //{
-            //    options.Filters.Add(new ApplyPolicyOrAuthorizeFilter(isAdminUserPolicy));
-            //});
-        }
+		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
+		{
+			if (env.IsDevelopment())
+			{
+				app.UseDeveloperExceptionPage();
+			}
+			else
+			{
+				app.UseExceptionHandler("/Home/Error");
+				context.Database.Migrate();
+			}
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
-                context.Database.Migrate();
-            }
+			GlobalSettings.InitSettingsFromEnvironment();
+			GlobalSettings.GenerateSigningCertificate();
 
-            app.UseStaticFiles();
+			app.UseStaticFiles();
 
-            app.UseRouting();
+			app.UseRouting();
 
-            app.UseAuthentication();
-            app.UseAuthorization();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller=Home}/{action=Index}");
-            });
+			app.UseEndpoints(endpoints =>
+			{
+				endpoints.MapControllerRoute(
+					name: "default",
+					pattern: "{controller=Home}/{action=Index}");
+			});
 
-            //SAMLPortalContext context = new SAMLPortalContext();
-            //if (!context.Setup.Any())
-            //{
-            //    Setup initialSetup = new Setup();
-            //    initialSetup.IsConfigured = false;
-            //    context.Add(initialSetup);
-            //    context.SaveChanges();
-            //}
+			//SAMLPortalContext context = new SAMLPortalContext();
+			//if (!context.Setup.Any())
+			//{
+			//    Setup initialSetup = new Setup();
+			//    initialSetup.IsConfigured = false;
+			//    context.Add(initialSetup);
+			//    context.SaveChanges();
+			//}
 
-            //App test = new App();
-            //test.Name = "Gitlab";
-            //test.Description = "An awesome GitHub alternative";
-            //test.Enabled = true;
-            //using (var context = new SAMLPortalContext())
-            //{
-            //    //context.Add(test);
-            //    //context.SaveChanges();
-            //    //Console.WriteLine("CHANGED");
+			//App test = new App();
+			//test.Name = "Gitlab";
+			//test.Description = "An awesome GitHub alternative";
+			//test.Enabled = true;
+			//using (var context = new SAMLPortalContext())
+			//{
+			//    //context.Add(test);
+			//    //context.SaveChanges();
+			//    //Console.WriteLine("CHANGED");
 
-            //    var allApps = context.App.ToList();
-            //}
-        }
-    }
+			//    var allApps = context.App.ToList();
+			//}
+		}
+	}
 }

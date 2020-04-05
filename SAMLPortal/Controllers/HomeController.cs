@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -12,34 +12,34 @@ using SAMLPortal.Models;
 
 namespace SAMLPortal.Controllers
 {
-    [Authorize]
-    public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
+	[Authorize]
+	public class HomeController : Controller
+	{
+		private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
-        {
-            _logger = logger;
-        }
+		public HomeController(ILogger<HomeController> logger)
+		{
+			_logger = logger;
+		}
 
-        [AllowAnonymous]
-        public IActionResult Index()
-        {
-            return View();
-        }
+		[AllowAnonymous]
+		public IActionResult Index()
+		{
+			return View();
+		}
 
-        [Authorize(Roles = UserRoles.User)]
-        public IActionResult Privacy()
-        {
-            ClaimsPrincipal currentUser = this.User;
-            var test = currentUser.FindFirst("displayName");
-            return View();
-        }
+		[Authorize(Roles = UserRoles.User)]
+		public IActionResult Privacy()
+		{
+			ClaimsPrincipal currentUser = this.User;
+			var test = currentUser.FindFirst("displayName");
+			return View();
+		}
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        }
-    }
+		[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+		public IActionResult Error()
+		{
+			return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+		}
+	}
 }

@@ -1,0 +1,86 @@
+version: "3.3"
+services:
+  samlportal:
+    image: samlportal/samlportal:latest
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      # This environment will disapear in future releases of SAMLPortal and will be replaced by step-by-step configurator
+      SP_LDAP_Host: openldap
+      SP_LDAP_Port: 389
+      SP_LDAP_BindDN: cn=admin,dc=saml,dc=portal
+      SP_LDAP_BindPass: helloSAMLPortal
+      SP_LDAP_SearchBase: dc=saml,dc=portal
+      SP_LDAP_AdminFilter: (&(memberOf=cn=YOUR-CN-HERE)(uid={0}))
+      SP_LDAP_UsersFilter: (&(memberOf=cn=YOUR-CN-HERE)(uid={0}))
+      SP_LDAP_Attr_MemberOf: memberOf
+      SP_LDAP_Attr_DisplayName: cn
+      SP_LDAP_Attr_UID: uid
+      SP_LDAP_Attr_Mail: mail
+      SP_CONFIG_CompanyName: SAMLPortal
+      SP_CONFIG_CompanyCountryCode: CH
+      SP_CONFIG_CompanySubject: SAMLPortal
+      SP_CONFIG_URL: saml.portal
+      SP_MYSQL_HOST: db
+      SP_MYSQL_PORT: 3306
+      SP_MYSQL_DB: samlportal
+      SP_MYSQL_USER: samlportal
+      SP_MYSQL_PASS: samlportal
+      SP_FORCE_ENV_REPOPUL: 1
+
+  db:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: samlportal
+      MYSQL_DATABASE: samlportal
+      MYSQL_USER: samlportal
+      MYSQL_PASSWORD: samlportal
+    volumes:
+      - ./db-data:/var/lib/mysql
+
+  openldap:
+    image: osixia/openldap:latest
+    restart: always
+    environment:
+      LDAP_LOG_LEVEL: "256"
+      LDAP_ORGANIZATION: "SAMLPortal"
+      LDAP_DOMAIN: "saml.portal"
+      LDAP_BASE_DN: ""
+      #LDAP_ADMIN_PASSWORD: "admin"
+      #LDAP_CONFIG_PASSWORD: "config"
+      #LDAP_READONLY_USER: "false"
+      #LDAP_READONLY_USER_USERNAME: "readonly"
+      #LDAP_READONLY_USER_PASSWORD: "readonly"
+      LDAP_RFC2307BIS_SCHEMA: "false"
+      LDAP_BACKEND: "mdb"
+      LDAP_TLS: "false"
+      #LDAP_TLS_CRT_FILENAME: "ldap.crt"
+      #LDAP_TLS_KEY_FILENAME: "ldap.key"
+      #LDAP_TLS_DH_PARAM_FILENAME: "dhparam.pem"
+      #LDAP_TLS_CA_CRT_FILENAME: "ca.crt"
+      #LDAP_TLS_ENFORCE: "false"
+      #LDAP_TLS_CIPHER_SUITE: "SECURE256:-VERS-SSL3.0"
+      #LDAP_TLS_PROTOCOL_MIN: "3.1"
+      #LDAP_TLS_VERIFY_CLIENT: "demand"
+      LDAP_REPLICATION: "false"
+      #LDAP_REPLICATION_CONFIG_SYNCPROV: "binddn="cn=admin,cn=config" bindmethod=simple credentials=$LDAP_CONFIG_PASSWORD searchbase="cn=config" type=refreshAndPersist retry="60 +" timeout=1 starttls=critical"
+      #LDAP_REPLICATION_DB_SYNCPROV: "binddn="cn=admin,$LDAP_BASE_DN" bindmethod=simple credentials=$LDAP_ADMIN_PASSWORD searchbase="$LDAP_BASE_DN" type=refreshAndPersist interval=00:00:00:10 retry="60 +" timeout=1 starttls=critical"
+      #LDAP_REPLICATION_HOSTS: "#PYTHON2BASH:['ldap://ldap.example.org','ldap://ldap2.example.org']"
+      KEEP_EXISTING_CONFIG: "true"
+      LDAP_REMOVE_CONFIG_AFTER_SETUP: "true"
+      #LDAP_SSL_HELPER_PREFIX: "ldap"
+    tty: true
+    stdin_open: true
+    volumes:
+      - ./openldap/data:/var/lib/ldap
+      - ./openldap/slapd:/etc/ldap/slapd.d
+      - ./openldap/certs:/container/service/slapd/assets/certs/
+    # ports:
+    #   - "127.0.0.1:389:389"
+    #   - "172.17.0.1:389:389"
+    #   - "636:636"
+    #   - 389:389
+    domainname: "saml.portal" # important: same as hostname
+    hostname: "saml.portal"
