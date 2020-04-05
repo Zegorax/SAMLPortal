@@ -9,7 +9,6 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2
       - name: Setup .NET Core
@@ -21,25 +20,23 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
       - name: Test
-		run: dotnet test --no-restore --verbosity normal
+        run: dotnet test --no-restore --verbosity normal
 
   review:
-	runs-on: ubuntu-latest
-	steps:
-	  - name: Check out code.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code.
         uses: actions/checkout@v1
       - name: misspell
         uses: reviewdog/action-misspell@v1
         with:
           github_token: ${{ secrets.github_token }}
-		  locale: "US"
-	  - name: eslint
+          locale: "US"
+      - name: eslint
         uses: reviewdog/action-eslint@v1
         with:
           github_token: ${{ secrets.github_token }}
-		  reporter: github-pr-review # Change reporter.
-	  
-	  
+          reporter: github-pr-review # Change reporter.
 
   docker-build:
     runs-on: ubuntu-latest
