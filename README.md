@@ -5,7 +5,8 @@ SAMLPortal
 <h2 align="center">
 The bridge between LDAP and SAML with RBAC !
 </h2>
-[.NET Core](https://github.com/Zegorax/SAMLPortal/workflows/.NET%20Core/badge.svg)
+
+![.NET Core](https://github.com/Zegorax/SAMLPortal/workflows/.NET%20Core/badge.svg)
 
 ## Introduction
 SAMLPortal is a web app designed for companies using a lot of self-hosted services. It act as a SAML IdP (Identity Provider) for your apps. It also doubles as welcome portal for users by presenting apps and categories for which the user has access to.
