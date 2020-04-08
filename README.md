@@ -25,23 +25,23 @@ Update your database with
 `dotnet ef database update`
 
 ## VSCode extensions
-- .NET Core Add Reference
-- .NET Core Extension Pack
-- .NET Core Snippet Pack
-- .NET Core Test Explorer
-- .NET Core Tools
-- ASP.NET Core Switcher
-- ASP.NET Helper
-- Better Comments
-- C#
-- C# Extensions
-- C# FixFormat
-- C# XML Documentation Comments
-- EditorConfig for VS Code
-- Essential ASP.NET Core 3 Snippets
-- gitignore
-- NuGet Package Manager
-- Path Intellisense
-- Super Sharp
-- Test Explorer UI
-- XML
+-   .NET Core Add Reference
+-   .NET Core Extension Pack
+-   .NET Core Snippet Pack
+-   .NET Core Test Explorer
+-   .NET Core Tools
+-   ASP.NET Core Switcher
+-   ASP.NET Helper
+-   Better Comments
+-   C#
+-   C# Extensions
+-   C# FixFormat
+-   C# XML Documentation Comments
+-   EditorConfig for VS Code
+-   Essential ASP.NET Core 3 Snippets
+-   gitignore
+-   NuGet Package Manager
+-   Path Intellisense
+-   Super Sharp
+-   Test Explorer UI
+-   XML
