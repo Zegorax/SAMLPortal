@@ -35,6 +35,8 @@ namespace SAMLPortal
 		{
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
 
+			GlobalSettings.InitSettingsFromEnvironment();
+
 			services.AddDbContext<SAMLPortalContext>(options =>
 				options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
 					mysqlOptions =>
@@ -77,7 +79,6 @@ namespace SAMLPortal
 				context.Database.Migrate();
 			}
 
-			GlobalSettings.InitSettingsFromEnvironment();
 			GlobalSettings.GenerateSigningCertificate();
 
 			app.UseStaticFiles();
