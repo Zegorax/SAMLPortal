@@ -13,10 +13,5 @@ namespace SAMLPortal.Models
 
 		[Required]
 		public virtual string Value { get; set; }
-
-		public KeyValue()
-		{
-
-		}
 	}
 }
