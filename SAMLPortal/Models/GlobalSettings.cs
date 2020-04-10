@@ -13,7 +13,7 @@ namespace SAMLPortal.Models
 	public static class GlobalSettings
 	{
 		private static Dictionary<string, string> _appSettings = new Dictionary<string, string>();
-		public static X509Certificate2 _signingCertificate;
+		public static X509Certificate2 _signingCertificate { get; set; }
 
 		/// <summary>
 		/// All environment variables for this app MUST begin with SP_
@@ -78,20 +78,21 @@ namespace SAMLPortal.Models
 
 			foreach (var key in _appSettings.Keys)
 			{
-				var settingExists = context.KeyValue.Any(k => k.Key == key.ToString());
+				var settingExists = context.KeyValue.Any(k => k.Key == key);
 
 				if (settingExists)
 				{
-					KeyValue settingToFind = context.KeyValue.Single(k => k.Key == key.ToString());
-					settingToFind.Value = _appSettings[key].ToString();
+					KeyValue settingToFind = context.KeyValue.Single(k => k.Key == key);
+					settingToFind.Value = _appSettings[key];
 				}
 				else
 				{
-					KeyValue newSetting = new KeyValue()
+					KeyValue newSetting = new KeyValue
 					{
 						Key = key,
 							Value = _appSettings[key]
 					};
+
 					context.KeyValue.Add(newSetting);
 				}
 			}

@@ -56,16 +56,10 @@ namespace SAMLPortal
 			});
 
 			services.AddControllersWithViews();
-
-			//var isAdminUserPolicy = new AuthorizationPolicyBuilder().RequireRole(UserRoles.Administrator).Build();
-			//services.AddMvc(options =>
-			//{
-			//    options.Filters.Add(new ApplyPolicyOrAuthorizeFilter(isAdminUserPolicy));
-			//});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
+		public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
 		{
 			if (env.IsDevelopment())
 			{

@@ -72,8 +72,6 @@ namespace SAMLPortal.Services
 						throw new Exception("Invalid username or password");
 					}
 				}
-
-				throw new Exception("Invalid username or password.");
 			}
 
 			_connection.Disconnect();

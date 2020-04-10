@@ -15,13 +15,6 @@ namespace SAMLPortal.Controllers
 	[Authorize]
 	public class HomeController : Controller
 	{
-		private readonly ILogger<HomeController> _logger;
-
-		public HomeController(ILogger<HomeController> logger)
-		{
-			_logger = logger;
-		}
-
 		[AllowAnonymous]
 		public IActionResult Index()
 		{
@@ -32,7 +25,6 @@ namespace SAMLPortal.Controllers
 		public IActionResult Privacy()
 		{
 			ClaimsPrincipal currentUser = this.User;
-			var test = currentUser.FindFirst("displayName");
 			return View();
 		}
 

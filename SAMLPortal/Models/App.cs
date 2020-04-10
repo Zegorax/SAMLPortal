@@ -22,7 +22,5 @@ namespace SAMLPortal.Models
 		public virtual Uri SingleSignOnDestination { get; set; }
 		public virtual Uri SingleLogoutResponseDestination { get; set; }
 		public virtual string SignatureValidationCertificate { get; set; }
-
-		public App() { }
 	}
 }
