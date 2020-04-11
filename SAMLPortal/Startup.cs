@@ -19,6 +19,7 @@ using SAMLPortal.Misc;
 using SAMLPortal.Models;
 using SAMLPortal.Services;
 using SAMLPortal.Middlewares;
+using SAMLPortal.Controllers;
 
 namespace SAMLPortal
 {
@@ -37,6 +38,7 @@ namespace SAMLPortal
 			GlobalSettings.InitSettingsFromEnvironment();
 
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+			services.AddScoped<SetupAsyncActionFilter>();
 
 			services.AddDbContext<SAMLPortalContext>(options =>
 				options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
