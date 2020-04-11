@@ -9,7 +9,6 @@
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
 SAMLPortal/.env
-SAMLPortal/DEBUG_CONFIG_SAMLPORTAL
 # User-specific files
 *.rsuser
 *.suo
