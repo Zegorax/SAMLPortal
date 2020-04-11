@@ -18,6 +18,7 @@ using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SAMLPortal.Misc;
 using SAMLPortal.Models;
 using SAMLPortal.Services;
+using SAMLPortal.Middlewares;
 
 namespace SAMLPortal
 {
@@ -33,6 +34,8 @@ namespace SAMLPortal
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			GlobalSettings.InitSettingsFromEnvironment();
+
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
 
 			services.AddDbContext<SAMLPortalContext>(options =>
@@ -67,12 +70,9 @@ namespace SAMLPortal
 			}
 			else
 			{
-				app.UseExceptionHandler("/Home/Error");
+				//app.UseExceptionHandler("/Error");
 				context.Database.Migrate();
 			}
-
-			GlobalSettings.InitSettingsFromEnvironment();
-			GlobalSettings.GenerateSigningCertificate();
 
 			app.UseStaticFiles();
 
@@ -81,11 +81,11 @@ namespace SAMLPortal
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.UseSetupAssistantMiddleware();
+
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapControllerRoute(
-					name: "default",
-					pattern: "{controller=Home}/{action=Index}");
+				endpoints.MapControllers();
 			});
 
 			//SAMLPortalContext context = new SAMLPortalContext();

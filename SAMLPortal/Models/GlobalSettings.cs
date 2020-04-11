@@ -1,7 +1,9 @@
+using System.Security.Principal;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
@@ -20,29 +22,53 @@ namespace SAMLPortal.Models
 		/// </summary>
 		public static void InitSettingsFromEnvironment()
 		{
-			DotNetEnv.Env.Load("./.env");
-			IDictionary environment = Environment.GetEnvironmentVariables();
+			FillSettingsArray();
 
-			if (Environment.GetEnvironmentVariable("SP_FORCE_ENV_REPOPUL") == "1")
+			string configurationPath = GlobalSettings.Get("CONFIG_PATH");
+			if (configurationPath != null)
 			{
-				// Re-fill databse with environment configuration
-				foreach (var key in environment.Keys)
+				if (Directory.Exists(configurationPath))
 				{
-					if (key.ToString().StartsWith("SP_") && !key.ToString().StartsWith("SP_MYSQL"))
-					{
-						string shortenedKey = key.ToString().Remove(0, 3);
-						_appSettings.Add(shortenedKey, environment[key].ToString());
-					}
-				}
+					// Ensure trailing slash is present
+					configurationPath = configurationPath.TrimEnd('/') + '/';
 
-				UpdateDatabaseSettings();
+					var configPath = configurationPath + "config.env";
+					if (!File.Exists(configPath))
+					{
+						using (FileStream fs = File.Create(configPath)) { }
+						Helpers.WriteEnvVariableToFile(configPath, "SP_CONFIG_SETUPASSISTANT_STEP", "0");
+					}
+
+					DotNetEnv.Env.Load(configPath);
+					FillSettingsArray();
+				}
+				else
+				{
+					throw new Exception("The directory " + configurationPath + " does not exists. Please create it first.");
+				}
 			}
 			else
 			{
-				// Store database configuration in global settings
-				UpdateFromDatabase();
+				throw new Exception("Environment variable SP_CONFIG_PATH undefined. Please set it to a correct directory.");
 			}
+		}
 
+		private static void FillSettingsArray()
+		{
+			_appSettings.Clear();
+
+			// Debug Only:
+			_appSettings.Add("CONFIG_PATH", "/tmp/SAMLPortal");
+
+			IDictionary environment = Environment.GetEnvironmentVariables();
+			foreach (var key in environment.Keys)
+			{
+				if (key.ToString().StartsWith("SP_"))
+				{
+					string shortenedKey = key.ToString().Remove(0, 3);
+					_appSettings.Add(shortenedKey, environment[key].ToString());
+				}
+			}
 		}
 
 		public static void GenerateSigningCertificate()
@@ -90,7 +116,7 @@ namespace SAMLPortal.Models
 					KeyValue newSetting = new KeyValue
 					{
 						Key = key,
-							Value = _appSettings[key]
+						Value = _appSettings[key]
 					};
 
 					context.KeyValue.Add(newSetting);
