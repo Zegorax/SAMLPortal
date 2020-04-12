@@ -1,13 +1,10 @@
+using System.Runtime.CompilerServices;
 using System.IO;
-using System.Collections;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Primitives;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
@@ -17,8 +14,7 @@ using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.Utilities;
 using Org.BouncyCastle.X509;
-using static System.Net.WebRequestMethods;
-using SAMLPortal.Models;
+using System.Globalization;
 
 namespace SAMLPortal.Misc
 {
@@ -127,6 +123,11 @@ namespace SAMLPortal.Misc
 			return certificate;
 		}
 
+		/// <summary>
+		/// Convert a X509 certificate to a base64 encoded string export
+		/// </summary>
+		/// <param name="certificate">X509Certificate2 object</param>
+		/// <returns>Base64 encoded string export of the certificate</returns>
 		public static string X509Certificate2ToString(X509Certificate2 certificate)
 		{
 			var exportedCert = certificate.Export(X509ContentType.Pfx);
@@ -135,12 +136,23 @@ namespace SAMLPortal.Misc
 			return b64Cert;
 		}
 
+		/// <summary>
+		/// Convert a base64 encoded X509 certificate to a X509Certificate 2 object
+		/// </summary>
+		/// <param name="b64Cert">base64 encoded string of the certificate</param>
+		/// <returns>X509Certificate2 object</returns>
 		public static X509Certificate2 StringToX509Certificate2(string b64Cert)
 		{
 			var decodedCert = Convert.FromBase64String(b64Cert);
 			return new X509Certificate2(decodedCert);
 		}
 
+		/// <summary>
+		/// Write environment variable to a file in the format VARIABLE=VALUE
+		/// </summary>
+		/// <param name="filePath">Path of the file to write to</param>
+		/// <param name="key">Name of the environment variable</param>
+		/// <param name="value">Value of the environment variable</param>
 		public static void WriteEnvVariableToFile(string filePath, string key, string value)
 		{
 			if (!key.Contains(" ") && !value.Contains(" "))
@@ -192,9 +204,6 @@ namespace SAMLPortal.Misc
 			{
 				WriteEnvVariableToFile(filePath, variable, value);
 			}
-
 		}
-
-
 	}
 }

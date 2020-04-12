@@ -1,19 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
-using System.Security.Claims;
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.Extensions.Logging;
 using SAMLPortal.Misc;
 using SAMLPortal.Models;
 using SAMLPortal.Models.Setup;
 using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore;
+using CountryData.Standard;
 
 namespace SAMLPortal.Controllers
 {
@@ -90,7 +85,43 @@ namespace SAMLPortal.Controllers
 		[Route("2")]
 		public IActionResult SecondStep()
 		{
-			return Content("WIP");
+			SecondStepModel model = new SecondStepModel();
+
+			var countries = new CountryHelper().GetCountryData();
+			model.CountryList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(countries, "CountryShortCode", "CountryName");
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[Route("2")]
+		public IActionResult SecondStep(SecondStepModel model)
+		{
+			var countries = new CountryHelper().GetCountryData();
+
+			if (ModelState.IsValid)
+			{
+				var country = countries.Where(c => c.CountryShortCode == model.CountryCode);
+				if (country.Any())
+				{
+					GlobalSettings.Store("CONFIG_CompanyName", model.CompanyName);
+					GlobalSettings.Store("CONFIG_CompanySubject", model.CompanyName);
+					GlobalSettings.Store("CONFIG_CompanyCountryCode", country.First().CountryShortCode);
+
+					Helpers.ReplaceEnvVariableInFile(GlobalSettings.Get("CONFIG_FILE"), "SP_CONFIG_SETUPASSISTANT_STEP", "3");
+
+					return Redirect("3");
+				}
+				else
+				{
+					ModelState.AddModelError(string.Empty, "Unknown country");
+				}
+
+			}
+
+			model.CountryList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(countries, "CountryShortCode", "CountryName");
+
+			return View(model);
 		}
 	}
 
