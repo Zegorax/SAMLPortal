@@ -19,7 +19,10 @@ namespace SAMLPortal.Models
 		{
 			if (!optionsBuilder.IsConfigured)
 			{
-				optionsBuilder.UseMySql("server=" + Environment.GetEnvironmentVariable("SP_MYSQL_HOST") + ";port=" + Environment.GetEnvironmentVariable("SP_MYSQL_PORT") + ";user=" + Environment.GetEnvironmentVariable("SP_MYSQL_USER") + ";password=" + Environment.GetEnvironmentVariable("SP_MYSQL_PASS") + ";database=" + Environment.GetEnvironmentVariable("SP_MYSQL_DB"), x => x.ServerVersion("5.7.26-mysql"));
+				optionsBuilder.UseMySql("server=" + Environment.GetEnvironmentVariable("SP_MYSQL_HOST") + ";port=" + Environment.GetEnvironmentVariable("SP_MYSQL_PORT") + ";user=" + Environment.GetEnvironmentVariable("SP_MYSQL_USER") + ";password=" + Environment.GetEnvironmentVariable("SP_MYSQL_PASS") + ";database=" + Environment.GetEnvironmentVariable("SP_MYSQL_DB"), builder =>
+				{
+					builder.ServerVersion("5.7.26-mysql");
+				});
 			}
 		}
 

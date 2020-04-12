@@ -72,8 +72,11 @@ namespace SAMLPortal
 			}
 			else
 			{
-				//app.UseExceptionHandler("/Error");
-				context.Database.Migrate();
+				app.UseExceptionHandler("/Error");
+				if (GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") > 5)
+				{
+					context.Database.Migrate();
+				}
 			}
 
 			app.UseStaticFiles();

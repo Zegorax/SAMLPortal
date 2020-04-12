@@ -151,5 +151,50 @@ namespace SAMLPortal.Misc
 				}
 			}
 		}
+
+		/// <summary>
+		/// Search and replace text inside a file
+		/// </summary>
+		/// <param name="filePath">Path of the file to edit</param>
+		/// <param name="oldText">Old text to search for</param>
+		/// <param name="newText">New text replacing the old text</param>
+		public static void ReplaceTextInFile(string filePath, string oldText, string newText)
+		{
+			string fileContent = System.IO.File.ReadAllText(filePath);
+			fileContent = fileContent.Replace(oldText, newText);
+			System.IO.File.WriteAllText(filePath, fileContent);
+		}
+
+		/// <summary>
+		/// Search for an environment variable in a file and replace it if found. If not found, the variable will be added to the file.
+		/// </summary>
+		/// <param name="filePath">Path of the file to edit</param>
+		/// <param name="variable">Environment variable to search for</param>
+		/// <param name="value">Value to set to the envrionment variable</param>
+		public static void ReplaceEnvVariableInFile(string filePath, string variable, string value)
+		{
+			bool hasFoundVariable = false;
+			using (StreamReader sr = new StreamReader(filePath))
+			{
+				while (sr.Peek() >= 0)
+				{
+					var line = sr.ReadLine();
+					if (line.StartsWith(variable + "="))
+					{
+						hasFoundVariable = true;
+						var newVariable = variable + "=" + value;
+						ReplaceTextInFile(filePath, line, newVariable);
+					}
+				}
+			}
+
+			if (!hasFoundVariable)
+			{
+				WriteEnvVariableToFile(filePath, variable, value);
+			}
+
+		}
+
+
 	}
 }

@@ -22,7 +22,7 @@ namespace SAMLPortal.Models
 		/// </summary>
 		public static void InitSettingsFromEnvironment()
 		{
-			FillSettingsArray();
+			UpdateFromEnvironment();
 
 			string configurationPath = GlobalSettings.Get("CONFIG_PATH");
 			if (configurationPath != null)
@@ -32,15 +32,16 @@ namespace SAMLPortal.Models
 					// Ensure trailing slash is present
 					configurationPath = configurationPath.TrimEnd('/') + '/';
 
-					var configPath = configurationPath + "config.env";
-					if (!File.Exists(configPath))
+					var fileConfigPath = configurationPath + "config.env";
+					if (!File.Exists(fileConfigPath))
 					{
-						using (FileStream fs = File.Create(configPath)) { }
-						Helpers.WriteEnvVariableToFile(configPath, "SP_CONFIG_SETUPASSISTANT_STEP", "0");
+						using (FileStream fs = File.Create(fileConfigPath)) { }
+						Helpers.WriteEnvVariableToFile(fileConfigPath, "SP_CONFIG_SETUPASSISTANT_STEP", "0");
 					}
 
-					DotNetEnv.Env.Load(configPath);
-					FillSettingsArray();
+					DotNetEnv.Env.Load(fileConfigPath);
+					Environment.SetEnvironmentVariable("SP_CONFIG_FILE", fileConfigPath);
+					UpdateFromEnvironment();
 				}
 				else
 				{
@@ -50,24 +51,6 @@ namespace SAMLPortal.Models
 			else
 			{
 				throw new Exception("Environment variable SP_CONFIG_PATH undefined. Please set it to a correct directory.");
-			}
-		}
-
-		private static void FillSettingsArray()
-		{
-			_appSettings.Clear();
-
-			// Debug Only:
-			_appSettings.Add("CONFIG_PATH", "/tmp/SAMLPortal");
-
-			IDictionary environment = Environment.GetEnvironmentVariables();
-			foreach (var key in environment.Keys)
-			{
-				if (key.ToString().StartsWith("SP_"))
-				{
-					string shortenedKey = key.ToString().Remove(0, 3);
-					_appSettings.Add(shortenedKey, environment[key].ToString());
-				}
 			}
 		}
 
@@ -126,12 +109,31 @@ namespace SAMLPortal.Models
 			context.SaveChanges();
 		}
 
-		public static void UpdateFromDatabase()
+		private static void UpdateFromEnvironment()
 		{
+			_appSettings.Clear();
+
+			// Debug Only:
+			_appSettings.Add("CONFIG_PATH", "/tmp/SAMLPortal");
+
+			IDictionary environment = Environment.GetEnvironmentVariables();
+			foreach (var key in environment.Keys)
+			{
+				if (key.ToString().StartsWith("SP_") && !key.ToString().StartsWith("SP_MYSQL"))
+				{
+					string shortenedKey = key.ToString().Remove(0, 3);
+					_appSettings.Add(shortenedKey, environment[key].ToString());
+				}
+			}
+		}
+
+		private static void UpdateFromDatabase()
+		{
+			UpdateFromEnvironment();
+
 			SAMLPortalContext context = new SAMLPortalContext();
 			var settings = context.KeyValue.ToList();
 
-			_appSettings.Clear();
 			foreach (var setting in settings)
 			{
 				_appSettings[setting.Key] = setting.Value;

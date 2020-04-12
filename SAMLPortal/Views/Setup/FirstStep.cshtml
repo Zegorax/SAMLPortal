@@ -1,0 +1,44 @@
+@using SAMLPortal.Models.Setup
+@model FirstStepModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h1>MySQL</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="POST">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="MySQLHost" class="control-label"></label>
+                <input asp-for="MySQLHost" class="form-control" />
+                <span asp-validation-for="MySQLHost" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="MySQLPort" class="control-label"></label>
+                <input asp-for="MySQLPort" class="form-control" />
+                <span asp-validation-for="MySQLPort" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="MySQLDatabaseName" class="control-label"></label>
+                <input asp-for="MySQLDatabaseName" class="form-control" />
+                <span asp-validation-for="MySQLDatabaseName" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="MySQLUser" class="control-label"></label>
+                <input asp-for="MySQLUser" class="form-control" />
+                <span asp-validation-for="MySQLUser" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="MySQLPassword" class="control-label"></label>
+                <input asp-for="MySQLPassword" class="form-control" />
+                <span asp-validation-for="MySQLPassword" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Test connection" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
