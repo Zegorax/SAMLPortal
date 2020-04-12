@@ -42,6 +42,11 @@ namespace SAMLPortal.Models
 					DotNetEnv.Env.Load(fileConfigPath);
 					Environment.SetEnvironmentVariable("SP_CONFIG_FILE", fileConfigPath);
 					UpdateFromEnvironment();
+
+					if (Environment.GetEnvironmentVariable("SP_MYSQL_USER") != null)
+					{
+						UpdateFromDatabase();
+					}
 				}
 				else
 				{
@@ -153,7 +158,7 @@ namespace SAMLPortal.Models
 
 		}
 
-		public static int GetInt(string key)
+		public static int? GetInt(string key)
 		{
 			try
 			{
@@ -161,7 +166,7 @@ namespace SAMLPortal.Models
 			}
 			catch (Exception ex)
 			{
-				throw new Exception("Error while converting value : " + ex.Message);
+				return null;
 			}
 		}
 	}

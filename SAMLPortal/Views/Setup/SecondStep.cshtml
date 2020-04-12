@@ -17,6 +17,11 @@
                 <span asp-validation-for="CompanyName" class="text-danger"></span>
             </div>
 			<div class="form-group">
+                <label asp-for="AppHost" class="control-label"></label>
+                <input asp-for="AppHost" class="form-control" />
+                <span asp-validation-for="AppHost" class="text-danger"></span>
+            </div>
+			<div class="form-group">
 				<label asp-for="CountryCode" class="col-md-2 control-label"></label>
 				<div class="col-md-10">
 					<select asp-for="CountryCode" asp-items="@Model.CountryList"></select>

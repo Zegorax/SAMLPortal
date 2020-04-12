@@ -16,5 +16,10 @@ namespace SAMLPortal.Models.Setup
 
 		[DisplayNameAttribute("Country")]
 		public SelectList CountryList { get; set; }
+
+		[Required(ErrorMessage = "Application host cannot be empty")]
+		[DisplayNameAttribute("Application host")]
+		[DataType(DataType.Url)]
+		public string AppHost { get; set; }
 	}
 }

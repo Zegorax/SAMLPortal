@@ -14,13 +14,24 @@ namespace SAMLPortal.Services
 		{
 			_connection = new LdapConnection
 			{
-				SecureSocketLayer = false
+				SecureSocketLayer = bool.Parse(GlobalSettings.Get("LDAP_SSL"))
 			};
 		}
 
 		public AppUser Login(string username, string password)
 		{
-			_connection.Connect(GlobalSettings.Get("LDAP_Host"), GlobalSettings.GetInt("LDAP_Port"));
+			var ldapPortU = GlobalSettings.GetInt("LDAP_Port");
+			var ldapPort = 0;
+			if (ldapPortU == null)
+			{
+				throw new Exception("Error : LDAP Port not set in database. Cannot continue.");
+			}
+			else
+			{
+				ldapPort = (int)ldapPortU;
+			}
+
+			_connection.Connect(GlobalSettings.Get("LDAP_Host"), ldapPort);
 			_connection.Bind(GlobalSettings.Get("LDAP_BindDN"), GlobalSettings.Get("LDAP_BindPass"));
 
 			var adminSearchFilter = string.Format(GlobalSettings.Get("LDAP_AdminFilter"), username);
@@ -54,10 +65,10 @@ namespace SAMLPortal.Services
 								return new AppUser
 								{
 									DisplayName = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_DisplayName")).StringValue,
-										Username = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_UID")).StringValue,
-										Email = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_Mail")).StringValue,
-										IsAdmin = filter == adminSearchFilter,
-										Memberships = memberships
+									Username = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_UID")).StringValue,
+									Email = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_Mail")).StringValue,
+									IsAdmin = filter == adminSearchFilter,
+									Memberships = memberships
 								};
 							}
 						}
