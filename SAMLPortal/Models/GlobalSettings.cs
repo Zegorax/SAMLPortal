@@ -164,7 +164,7 @@ namespace SAMLPortal.Models
 			{
 				return Convert.ToInt32(_appSettings[key]);
 			}
-			catch (Exception ex)
+			catch (Exception)
 			{
 				return null;
 			}

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace SAMLPortal.Models.Setup
 {
-	public class SecondStepModel
+	public class StepTwoModel
 	{
 		[Required(ErrorMessage = "Your company name cannot be empty")]
 		[DisplayNameAttribute("Company name")]

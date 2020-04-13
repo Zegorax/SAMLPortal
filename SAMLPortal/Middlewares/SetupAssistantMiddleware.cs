@@ -1,3 +1,4 @@
+using System.Linq;
 using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
@@ -18,10 +19,22 @@ namespace SAMLPortal.Middlewares
 		public Task Invoke(HttpContext httpContext)
 		{
 			var configurationStep = GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP");
+			string requestPath = httpContext.Request.Path.ToString().ToLower();
 
-			if (!httpContext.Request.Path.ToString().Contains("Setup") && configurationStep < 6)
+			if (configurationStep < 6)
 			{
-				httpContext.Response.Redirect("/Setup/" + configurationStep);
+				var endpoint = httpContext.GetEndpoint();
+				if (endpoint != null)
+				{
+					if (!endpoint.DisplayName.StartsWith("SAMLPortal.Controllers.SetupController") && !endpoint.DisplayName.StartsWith("SAMLPortal.Controllers.API.SetupController"))
+					{
+						httpContext.Response.Redirect("/Setup/" + configurationStep);
+					}
+				}
+				else
+				{
+					httpContext.Response.Redirect("/Setup/" + configurationStep);
+				}
 			}
 
 			return _next(httpContext);

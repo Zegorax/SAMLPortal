@@ -27,7 +27,7 @@ namespace SAMLPortal.Controllers
 
 		[HttpGet]
 		[Route("1")]
-		public IActionResult FirstStep()
+		public IActionResult StepOne()
 		{
 			var mysqlHost = Environment.GetEnvironmentVariable("SP_MYSQL_HOST");
 			var mysqlPortString = Environment.GetEnvironmentVariable("SP_MYSQL_PORT");
@@ -46,7 +46,7 @@ namespace SAMLPortal.Controllers
 				}
 			}
 
-			FirstStepModel model = new FirstStepModel();
+			StepOneModel model = new StepOneModel();
 			model.MySQLHost = mysqlHost != null ? mysqlHost : "";
 			model.MySQLPort = mysqlPort != 3306 ? mysqlPort : 3306;
 			model.MySQLDatabaseName = mysqlDb != null ? mysqlDb : "";
@@ -57,7 +57,7 @@ namespace SAMLPortal.Controllers
 
 		[HttpPost]
 		[Route("1")]
-		public IActionResult FirstStep(FirstStepModel model)
+		public IActionResult StepOne(StepOneModel model)
 		{
 			if (ModelState.IsValid)
 			{
@@ -106,12 +106,12 @@ namespace SAMLPortal.Controllers
 
 		[HttpGet]
 		[Route("2")]
-		public IActionResult SecondStep()
+		public IActionResult StepTwo()
 		{
 			var companyName = GlobalSettings.Get("CONFIG_CompanyName");
 			var appHost = GlobalSettings.Get("CONFIG_URL");
 
-			SecondStepModel model = new SecondStepModel();
+			StepTwoModel model = new StepTwoModel();
 			model.CompanyName = companyName != null ? companyName : "";
 			model.AppHost = appHost != null ? appHost : Request.Host.ToString();
 
@@ -123,7 +123,7 @@ namespace SAMLPortal.Controllers
 
 		[HttpPost]
 		[Route("2")]
-		public IActionResult SecondStep(SecondStepModel model)
+		public IActionResult StepTwo(StepTwoModel model)
 		{
 			var countries = new CountryHelper().GetCountryData();
 
@@ -156,7 +156,7 @@ namespace SAMLPortal.Controllers
 
 		[HttpGet]
 		[Route("3")]
-		public IActionResult ThirdStep()
+		public IActionResult StepThree()
 		{
 			var ldapHost = GlobalSettings.Get("LDAP_Host");
 			var ldapPort = GlobalSettings.GetInt("LDAP_Port");
@@ -164,7 +164,7 @@ namespace SAMLPortal.Controllers
 			var ldapBindDn = GlobalSettings.Get("LDAP_BindDN");
 			var ldapBindPassword = GlobalSettings.Get("LDAP_BindPass");
 
-			ThirdStepModel model = new ThirdStepModel();
+			StepThreeModel model = new StepThreeModel();
 			model.Host = ldapHost != null ? ldapHost : "";
 			model.Port = ldapPort != null ? ((int)ldapPort) : 389;
 			model.SSL = ldapSSL;
@@ -176,7 +176,7 @@ namespace SAMLPortal.Controllers
 
 		[HttpPost]
 		[Route("3")]
-		public IActionResult ThirdStep(ThirdStepModel model)
+		public IActionResult StepThree(StepThreeModel model)
 		{
 			if (ModelState.IsValid)
 			{
@@ -222,7 +222,15 @@ namespace SAMLPortal.Controllers
 		[Route("4")]
 		public IActionResult StepFour()
 		{
+			var ldapSearchBase = GlobalSettings.Get("LDAP_SearchBase");
+			var ldapAdminFilter = GlobalSettings.Get("LDAP_AdminFilter");
+			var ldapUserFilter = GlobalSettings.Get("LDAP_UsersFilter");
+
 			StepFourModel model = new StepFourModel();
+			model.SearchBase = ldapSearchBase != null ? ldapSearchBase : "";
+			model.AdminFilter = ldapAdminFilter != null ? ldapAdminFilter : "uid={0}";
+			model.UserFilter = ldapUserFilter != null ? ldapUserFilter : "uid={0}";
+
 			return View(model);
 		}
 
@@ -232,7 +240,12 @@ namespace SAMLPortal.Controllers
 		{
 			if (ModelState.IsValid)
 			{
+				GlobalSettings.Store("LDAP_SearchBase", model.SearchBase);
+				GlobalSettings.Store("LDAP_AdminFilter", model.AdminFilter);
+				GlobalSettings.Store("LDAP_UsersFilter", model.UserFilter);
 
+				Helpers.ReplaceEnvVariableInFile(GlobalSettings.Get("CONFIG_FILE"), "SP_CONFIG_SETUPASSISTANT_STEP", "5");
+				GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "5");
 			}
 
 			return View(model);

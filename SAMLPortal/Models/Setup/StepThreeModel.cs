@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SAMLPortal.Models.Setup
 {
-	public class ThirdStepModel
+	public class StepThreeModel
 	{
 		[Required(ErrorMessage = "LDAP host cannot be empty")]
 		[RegularExpression(@"^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$", ErrorMessage = "LDAP host is incorrectly formatted")]
