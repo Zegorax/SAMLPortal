@@ -108,6 +108,11 @@ namespace SAMLPortal.Controllers
 		[Route("2")]
 		public IActionResult StepTwo()
 		{
+			if (!CheckStep(2))
+			{
+				return Redirect("1");
+			}
+
 			var companyName = GlobalSettings.Get("CONFIG_CompanyName");
 			var appHost = GlobalSettings.Get("CONFIG_URL");
 
@@ -125,6 +130,11 @@ namespace SAMLPortal.Controllers
 		[Route("2")]
 		public IActionResult StepTwo(StepTwoModel model)
 		{
+			if (!CheckStep(2))
+			{
+				return Redirect("1");
+			}
+
 			var countries = new CountryHelper().GetCountryData();
 
 			if (ModelState.IsValid)
@@ -146,18 +156,23 @@ namespace SAMLPortal.Controllers
 				{
 					ModelState.AddModelError(string.Empty, "Unknown country");
 				}
-
 			}
 
 			model.CountryList = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(countries, "CountryShortCode", "CountryName");
 
 			return View(model);
+
 		}
 
 		[HttpGet]
 		[Route("3")]
 		public IActionResult StepThree()
 		{
+			if (!CheckStep(3))
+			{
+				return Redirect("2");
+			}
+
 			var ldapHost = GlobalSettings.Get("LDAP_Host");
 			var ldapPort = GlobalSettings.GetInt("LDAP_Port");
 			var ldapSSL = GlobalSettings.Get("LDAP_SSL") != null ? bool.Parse(GlobalSettings.Get("LDAP_SSL")) : false;
@@ -178,6 +193,11 @@ namespace SAMLPortal.Controllers
 		[Route("3")]
 		public IActionResult StepThree(StepThreeModel model)
 		{
+			if (!CheckStep(3))
+			{
+				return Redirect("2");
+			}
+
 			if (ModelState.IsValid)
 			{
 				LdapConnection connection = new LdapConnection();
@@ -222,6 +242,11 @@ namespace SAMLPortal.Controllers
 		[Route("4")]
 		public IActionResult StepFour()
 		{
+			if (!CheckStep(4))
+			{
+				return Redirect("3");
+			}
+
 			var ldapSearchBase = GlobalSettings.Get("LDAP_SearchBase");
 			var ldapAdminFilter = GlobalSettings.Get("LDAP_AdminFilter");
 			var ldapUserFilter = GlobalSettings.Get("LDAP_UsersFilter");
@@ -238,6 +263,11 @@ namespace SAMLPortal.Controllers
 		[Route("4")]
 		public IActionResult StepFour(StepFourModel model)
 		{
+			if (!CheckStep(4))
+			{
+				return Redirect("3");
+			}
+
 			if (ModelState.IsValid)
 			{
 				GlobalSettings.Store("LDAP_SearchBase", model.SearchBase);
@@ -255,6 +285,11 @@ namespace SAMLPortal.Controllers
 		[Route("5")]
 		public IActionResult StepFive()
 		{
+			if (!CheckStep(5))
+			{
+				return Redirect("4");
+			}
+
 			var ldapDisplayName = GlobalSettings.Get("LDAP_Attr_DisplayName");
 			var ldapUID = GlobalSettings.Get("LDAP_Attr_UID");
 			var ldapMemberOf = GlobalSettings.Get("LDAP_Attr_MemberOf");
@@ -273,6 +308,11 @@ namespace SAMLPortal.Controllers
 		[Route("5")]
 		public IActionResult StepFive(StepFiveModel model)
 		{
+			if (!CheckStep(5))
+			{
+				return Redirect("4");
+			}
+
 			if (ModelState.IsValid)
 			{
 				GlobalSettings.Store("LDAP_Attr_DisplayName", model.DisplayName);
@@ -287,6 +327,23 @@ namespace SAMLPortal.Controllers
 			}
 
 			return View(model);
+		}
+
+		/// <summary>
+		/// Returns false if the user purposely miss a step
+		/// </summary>
+		/// <param name="step"></param>
+		/// <returns></returns>
+		private bool CheckStep(int step)
+		{
+			if (step - GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") <= 1)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
 		}
 	}
 
