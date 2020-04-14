@@ -250,6 +250,44 @@ namespace SAMLPortal.Controllers
 
 			return View(model);
 		}
+
+		[HttpGet]
+		[Route("5")]
+		public IActionResult StepFive()
+		{
+			var ldapDisplayName = GlobalSettings.Get("LDAP_Attr_DisplayName");
+			var ldapUID = GlobalSettings.Get("LDAP_Attr_UID");
+			var ldapMemberOf = GlobalSettings.Get("LDAP_Attr_MemberOf");
+			var ldapMail = GlobalSettings.Get("LDAP_Attr_Mail");
+
+			StepFiveModel model = new StepFiveModel();
+			model.DisplayName = ldapDisplayName != null ? ldapDisplayName : "cn";
+			model.UID = ldapUID != null ? ldapUID : "uid";
+			model.MemberOf = ldapMemberOf != null ? ldapMemberOf : "memberOf";
+			model.Mail = ldapMail != null ? ldapMail : "mail";
+
+			return View(model);
+		}
+
+		[HttpPost]
+		[Route("5")]
+		public IActionResult StepFive(StepFiveModel model)
+		{
+			if (ModelState.IsValid)
+			{
+				GlobalSettings.Store("LDAP_Attr_DisplayName", model.DisplayName);
+				GlobalSettings.Store("LDAP_Attr_UID", model.UID);
+				GlobalSettings.Store("LDAP_Attr_MemberOf", model.MemberOf);
+				GlobalSettings.Store("LDAP_Attr_Mail", model.Mail);
+
+				Helpers.ReplaceEnvVariableInFile(GlobalSettings.Get("CONFIG_FILE"), "SP_CONFIG_SETUPASSISTANT_STEP", "6");
+				GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "6");
+
+				return Redirect("/");
+			}
+
+			return View(model);
+		}
 	}
 
 	public class SetupAsyncActionFilter : IAsyncActionFilter
@@ -261,8 +299,10 @@ namespace SAMLPortal.Controllers
 				// Setup has been completed and cannot be accessed anymore
 				context.HttpContext.Response.Redirect("/");
 			}
-
-			var resultContext = await next();
+			else
+			{
+				await next();
+			}
 		}
 	}
 }

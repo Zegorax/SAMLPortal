@@ -11,7 +11,7 @@ namespace SAMLPortal.Controllers.API
 {
 	[Route("api/setup")]
 	[ApiController]
-	//[ServiceFilter(typeof(SetupAsyncActionFilter))]
+	[ServiceFilter(typeof(SetupAsyncActionFilter))]
 	//[Produces("application/json")]
 	public class SetupController : Controller
 	{
