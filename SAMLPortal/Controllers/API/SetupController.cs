@@ -35,15 +35,29 @@ namespace SAMLPortal.Controllers.API
 					connection.Bind(GlobalSettings.Get("LDAP_BindDN"), GlobalSettings.Get("LDAP_BindPass"));
 
 					var userSearchFilter = string.Format(GlobalSettings.Get("LDAP_UsersFilter"), testUsername);
-					var searchResults = connection.Search(GlobalSettings.Get("LDAP_SearchBase"), LdapConnection.ScopeSub, userSearchFilter, new string[] { }, false);
+					var adminSearchFilter = string.Format(GlobalSettings.Get("LDAP_AdminFilter"), testUsername);
 
-					List<string> results = new List<string>();
+					List<string> filters = new List<string> { userSearchFilter, adminSearchFilter };
+					Dictionary<string, List<string>> allResults = new Dictionary<string, List<string>>();
 
-					while (searchResults.HasMore())
+					var filtersEnumerator = filters.GetEnumerator();
+					for (int i = 0; filtersEnumerator.MoveNext(); i++)
 					{
-						results.Add(searchResults.Next().Dn);
-						return Ok(Json(results));
+						var filter = filtersEnumerator.Current;
+
+						var searchResults = connection.Search(GlobalSettings.Get("LDAP_SearchBase"), LdapConnection.ScopeSub, filter, new string[] { }, false);
+						List<string> results = new List<string>();
+
+						while (searchResults.HasMore())
+						{
+							var entry = searchResults.Next();
+							results.Add(entry.Dn);
+						}
+
+						allResults.Add(i.ToString(), results);
 					}
+
+					return Ok(Json(allResults));
 				}
 				catch (LdapException)
 				{

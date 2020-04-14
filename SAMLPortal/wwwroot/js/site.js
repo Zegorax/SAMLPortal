@@ -24,7 +24,21 @@ function getResultsFromFilters()
 		{
 			let resultsDiv = document.getElementById("resultsDiv");
 			resultsDiv.innerHTML = "";
-			for (var key in values)
+			
+			let users = values["0"];
+			let admins = values["1"];
+
+			resultsDiv.innerHTML += "<p>Results of User filter :</p>";
+
+			for (var key in users)
+			{
+				var value = values[key];
+				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>"
+			}
+
+			resultsDiv.innerHTML += "<p>Results of Administrators filter :</p>"
+
+			for (var key in admins)
 			{
 				var value = values[key];
 				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>"
