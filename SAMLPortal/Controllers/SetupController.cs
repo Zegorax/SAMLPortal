@@ -43,6 +43,7 @@ namespace SAMLPortal.Controllers
 				}
 				catch (Exception)
 				{
+					// Not important if exception fires
 				}
 			}
 
@@ -59,7 +60,7 @@ namespace SAMLPortal.Controllers
 		[Route("1")]
 		public IActionResult StepOne(StepOneModel model)
 		{
-			if (ModelState.IsValid)
+			if (ModelState.IsValid && model != null)
 			{
 				try
 				{
@@ -90,14 +91,18 @@ namespace SAMLPortal.Controllers
 					GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "2");
 					return Redirect("2");
 				}
-				catch (MySqlException ex)
+				catch (Exception ex) when (ex is MySqlException)
 				{
-					Console.WriteLine(ex.Message);
-					ModelState.AddModelError(string.Empty, ex.Message);
-				}
-				catch (Exception)
-				{
-					ModelState.AddModelError(string.Empty, "An unknown error occured. Please try again.");
+					if (ex is MySqlException)
+					{
+						Console.WriteLine(ex.Message);
+						ModelState.AddModelError(string.Empty, ex.Message);
+					}
+					else
+					{
+						ModelState.AddModelError(string.Empty, "An unknown error occurred. Please try again.");
+						throw;
+					}
 				}
 			}
 
@@ -175,9 +180,14 @@ namespace SAMLPortal.Controllers
 
 			var ldapHost = GlobalSettings.Get("LDAP_Host");
 			var ldapPort = GlobalSettings.GetInt("LDAP_Port");
-			var ldapSSL = GlobalSettings.Get("LDAP_SSL") != null ? bool.Parse(GlobalSettings.Get("LDAP_SSL")) : false;
+			var ldapSSL = false;
 			var ldapBindDn = GlobalSettings.Get("LDAP_BindDN");
 			var ldapBindPassword = GlobalSettings.Get("LDAP_BindPass");
+
+			if (GlobalSettings.Get("LDAP_SSL") != null)
+			{
+				ldapSSL = bool.Parse(GlobalSettings.Get("LDAP_SSL"));
+			}
 
 			StepThreeModel model = new StepThreeModel();
 			model.Host = ldapHost != null ? ldapHost : "";
@@ -198,7 +208,7 @@ namespace SAMLPortal.Controllers
 				return Redirect("2");
 			}
 
-			if (ModelState.IsValid)
+			if (ModelState.IsValid && model != null)
 			{
 				LdapConnection connection = new LdapConnection();
 				connection.SecureSocketLayer = model.SSL;
@@ -220,18 +230,17 @@ namespace SAMLPortal.Controllers
 					return Redirect("4");
 
 				}
-				catch (LdapException ex)
-				{
-					ModelState.AddModelError(string.Empty, ex.Message);
-				}
-				catch (AggregateException ex)
-				{
-					ModelState.AddModelError(string.Empty, ex.Message);
-				}
 				catch (Exception ex)
 				{
-					ModelState.AddModelError(string.Empty, "An unknown error occurred. Please try again.");
-					Console.WriteLine(ex.Message);
+					if (ex is LdapException || ex is AggregateException)
+					{
+						ModelState.AddModelError(string.Empty, ex.Message);
+					}
+					else
+					{
+						ModelState.AddModelError(string.Empty, "An unknown error occurred. Please try again.");
+						throw;
+					}
 				}
 			}
 

@@ -15,10 +15,6 @@ namespace SAMLPortal.Controllers.API
 	//[Produces("application/json")]
 	public class SetupController : Controller
 	{
-		public SetupController()
-		{
-		}
-
 		// GET api/setup
 		[HttpPost]
 		[Route("getResultsFromFilters")]
@@ -40,11 +36,9 @@ namespace SAMLPortal.Controllers.API
 					List<string> filters = new List<string> { userSearchFilter, adminSearchFilter };
 					Dictionary<string, List<string>> allResults = new Dictionary<string, List<string>>();
 
-					var filtersEnumerator = filters.GetEnumerator();
-					for (int i = 0; filtersEnumerator.MoveNext(); i++)
+					int i = 0;
+					foreach (var filter in filters)
 					{
-						var filter = filtersEnumerator.Current;
-
 						var searchResults = connection.Search(GlobalSettings.Get("LDAP_SearchBase"), LdapConnection.ScopeSub, filter, new string[] { }, false);
 						List<string> results = new List<string>();
 
@@ -55,6 +49,7 @@ namespace SAMLPortal.Controllers.API
 						}
 
 						allResults.Add(i.ToString(), results);
+						i++;
 					}
 
 					return Ok(Json(allResults));
