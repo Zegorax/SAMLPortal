@@ -1,7 +1,7 @@
 ﻿@model SAMLPortal.Models.App
 
 @{
-    ViewData["Title"] = "AppDelete";
+    ViewData["Title"] = "Delete";
 }
 
 <h1>AppDelete</h1>
@@ -61,7 +61,7 @@
         </dd>
     </dl>
     
-    <form asp-action="AppDelete">
+    <form asp-action="Delete">
         <input type="hidden" asp-for="Id" />
         <input type="submit" value="Delete" class="btn btn-danger" /> |
         <a asp-action="Index">Back to List</a>

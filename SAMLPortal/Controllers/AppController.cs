@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SAMLPortal.Misc;
+using SAMLPortal.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace SAMLPortal.Controllers
 {
@@ -25,77 +27,159 @@ namespace SAMLPortal.Controllers
         }
 
 		// GET: App/Create
-		[Authorize(Roles = UserRoles.Administrator)]
+        [HttpGet]
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Create")]
 		public ActionResult Create()
         {
-            return View();
+			App emptyApp = new App();
+            return View(emptyApp);
         }
 
-        // POST: App/Create
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
-		public ActionResult Create(IFormCollection collection)
+		// Post: App/Create
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Create")]
+		public async Task<IActionResult> Create(
+			[Bind("Name, Description, Enabled, MetadataURL, Issuer, SingleSignOnDestination, SingleLogoutResponseDestination, SignatureValidationCertificate")] App appli)
         {
-            try
-            {
-                // TODO: Add insert logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+			try
+			{
+				SAMLPortalContext context = new SAMLPortalContext();
+				if(ModelState.IsValid)
+				{
+					
+					context.Add(appli);
+					await context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.
+				ModelState.AddModelError("", "Unable to save changes. " +
+					"Try again, and if the problem persists " +
+					"see your system administrator.");
+			}
+            return View(appli);
         }
 
 		// GET: App/Edit/5
-		[Authorize(Roles = UserRoles.Administrator)]
-		public ActionResult Edit(int id)
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Edit")]
+		public async Task<IActionResult> Edit(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+			SAMLPortalContext context = new SAMLPortalContext();
+            var app = await context.App.FindAsync(id);
+            if (app == null)
+            {
+                return NotFound();
+            }
+            return View(app);
         }
 
         // POST: App/Edit/5
-        [HttpPost]
+        [HttpPost, ActionName("Edit")]
         [ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
-		public ActionResult Edit(int id, IFormCollection collection)
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Edit")]
+		public async Task<IActionResult> EditPost(int? id)
         {
-            try
-            {
-                // TODO: Add update logic here
-
-                return RedirectToAction(nameof(Index));
-            }
-            catch
-            {
-                return View();
-            }
+			if (id == null)
+			{
+				return NotFound();
+			}
+			SAMLPortalContext context = new SAMLPortalContext();
+			var appToUpdate = await context.App.FirstOrDefaultAsync(s => s.Id == id);
+			if (await TryUpdateModelAsync<App>(
+				appToUpdate,
+				"",
+				s => s.Name,
+				s => s.Description,
+				s => s.Enabled,
+				s => s.MetadataURL,
+				s => s.Issuer,
+				s => s.SingleSignOnDestination,
+				s => s.SingleLogoutResponseDestination,
+				s => s.SignatureValidationCertificate))
+			{
+				try
+				{
+					await context.SaveChangesAsync();
+					return RedirectToAction(nameof(Index));
+				}
+				catch (DbUpdateException /* ex */)
+				{
+					//Log the error (uncomment ex variable name and write a log.)
+					ModelState.AddModelError("", "Unable to save changes. " +
+						"Try again, and if the problem persists, " +
+						"see your system administrator.");
+				}
+			}
+			return View(appToUpdate);
         }
 
 		// GET: App/Delete/5
-		[Authorize(Roles = UserRoles.Administrator)]
-		public ActionResult Delete(int id)
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Delete")]
+		public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
-            return View();
+			if(id == null)
+			{
+				return NotFound();
+			}
+			SAMLPortalContext context = new SAMLPortalContext();
+			var app = await context.App.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
+			if(app == null)
+			{
+				return NotFound();
+			}
+
+			if(saveChangesError.GetValueOrDefault())
+			{
+				ViewData["ErrorMessage"] =
+					"Delete failed. Try again, and if the problem persists " +
+					"see your system administrator.";
+			}
+            return View(app);
         }
 
         // POST: App/Delete/5
-        [HttpPost]
+        [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
-		public ActionResult Delete(int id, IFormCollection collection)
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("Delete")]
+		public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            try
+			SAMLPortalContext context = new SAMLPortalContext();
+            var app = await context.App.FindAsync(id);
+            if (app == null)
             {
-                // TODO: Add delete logic here
-
                 return RedirectToAction(nameof(Index));
             }
-            catch
+
+            try
             {
-                return View();
+                context.App.Remove(app);
+                await context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            catch (DbUpdateException /* ex */)
+            {
+                //Log the error (uncomment ex variable name and write a log.)
+                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
             }
         }
     }
