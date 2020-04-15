@@ -186,6 +186,8 @@ namespace SAMLPortal.Misc
 		public static void ReplaceEnvVariableInFile(string filePath, string variable, string value)
 		{
 			bool hasFoundVariable = false;
+			Dictionary<string, string> valuesToReplace = new Dictionary<string, string>();
+
 			using (StreamReader sr = new StreamReader(filePath))
 			{
 				while (sr.Peek() >= 0)
@@ -195,9 +197,14 @@ namespace SAMLPortal.Misc
 					{
 						hasFoundVariable = true;
 						var newVariable = variable + "=" + value;
-						ReplaceTextInFile(filePath, line, newVariable);
+						valuesToReplace.Add(line, newVariable);
 					}
 				}
+			}
+
+			foreach (var (line, newVariable) in valuesToReplace)
+			{
+				ReplaceTextInFile(filePath, line, newVariable);
 			}
 
 			if (!hasFoundVariable)
