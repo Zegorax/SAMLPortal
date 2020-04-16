@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Extensions.Options;
 using Novell.Directory.Ldap;
 using SAMLPortal.Models;
@@ -49,15 +50,26 @@ namespace SAMLPortal.Services
 							_connection.Bind(user.Dn, password);
 							if (_connection.Bound)
 							{
-								var memberships = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_MemberOf")).StringValueArray;
+								var ldapDisplayName = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_DisplayName")).StringValue;
+								var ldapUsername = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_UID")).StringValue;
+								var ldapEmail = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_Mail")).StringValue;
+								var isAdmin = filter == adminSearchFilter;
+								var ldapMemberships = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_MemberOf")).StringValueArray;
+
+								List<object> attributes = new List<object>() { ldapDisplayName, ldapUsername, ldapEmail, ldapMemberships };
+								if (attributes.Any(a => a == null))
+								{
+									var nullAttributes = attributes.FindAll(a => a == null).ToArray();
+									throw new Exception("The attribute " + string.Join(",", nullAttributes) + " is not present in your LDAP account. Please contact your administrator.");
+								}
 
 								return new AppUser
 								{
-									DisplayName = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_DisplayName")).StringValue,
-									Username = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_UID")).StringValue,
-									Email = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_Mail")).StringValue,
+									DisplayName = ldapDisplayName,
+									Username = ldapUsername,
+									Email = ldapEmail,
 									IsAdmin = filter == adminSearchFilter,
-									Memberships = memberships
+									Memberships = ldapMemberships != null ? ldapMemberships : new string[] { }
 								};
 							}
 						}

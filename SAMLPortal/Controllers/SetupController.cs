@@ -41,7 +41,7 @@ namespace SAMLPortal.Controllers
 				{
 					mysqlPort = Convert.ToInt32(mysqlPort);
 				}
-				catch (Exception)
+				catch (Exception ex)
 				{
 					// Not important if exception fires
 				}
