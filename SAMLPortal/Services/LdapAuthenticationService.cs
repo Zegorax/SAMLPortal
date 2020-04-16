@@ -56,7 +56,7 @@ namespace SAMLPortal.Services
 								var isAdmin = filter == adminSearchFilter;
 								var ldapMemberships = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_MemberOf")).StringValueArray;
 
-								List<object> attributes = new List<object>() { ldapDisplayName, ldapUsername, ldapEmail, ldapMemberships };
+								List<object> attributes = new List<object> { ldapDisplayName, ldapUsername, ldapEmail, ldapMemberships };
 								if (attributes.Any(a => a == null))
 								{
 									var nullAttributes = attributes.FindAll(a => a == null).ToArray();

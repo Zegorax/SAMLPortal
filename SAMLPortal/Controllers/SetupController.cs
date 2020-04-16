@@ -357,7 +357,6 @@ namespace SAMLPortal.Controllers
 
 	public class SetupAsyncActionFilter : IAsyncActionFilter
 	{
-		ActionExecutionDelegate _next;
 		public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 		{
 			_next = next;

@@ -28,19 +28,19 @@ function getResultsFromFilters()
 
 			resultsDiv.innerHTML += "<p>Results of User filter :</p>";
 
-			for (var key in users)
+			for (let userKey in users)
 			{
-				var value = values[key];
+				let value = values[userKey];
 				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>";
 			}
 
 			resultsDiv.innerHTML += "<p>Results of Administrators filter :</p>";
 
-			for (var key in admins)
+			for (let adminKey in admins)
 			{
-				var value = values[key];
+				let value = values[adminKey];
 				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>";
 			}
 		}
-	})
+	});
 }
