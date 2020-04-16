@@ -67,8 +67,6 @@ namespace SAMLPortal.Controllers.API
 			{
 				return Ok(Json(new { Error = "You need to complete setup step 5 or later first." }));
 			}
-
-			return Ok(Json(new { Error = "No results found." }));
 		}
 	}
 }
