@@ -60,7 +60,7 @@ namespace SAMLPortal.Services
 								if (attributes.Any(a => a == null))
 								{
 									var nullAttributes = attributes.FindAll(a => a == null).ToArray();
-									throw new Exception("The attribute " + string.Join(",", nullAttributes) + " is not present in your LDAP account. Please contact your administrator.");
+									throw new NotSupportedException("The attribute " + string.Join(", ", nullAttributes) + " is not present in your LDAP account. Please contact your administrator.");
 								}
 
 								return new AppUser
@@ -68,7 +68,7 @@ namespace SAMLPortal.Services
 									DisplayName = ldapDisplayName,
 									Username = ldapUsername,
 									Email = ldapEmail,
-									IsAdmin = filter == adminSearchFilter,
+									IsAdmin = isAdmin,
 									Memberships = ldapMemberships != null ? ldapMemberships : new string[] { }
 								};
 							}

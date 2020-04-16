@@ -39,7 +39,7 @@ namespace SAMLPortal.Controllers
 			{
 				try
 				{
-					mysqlPort = Convert.ToInt32(mysqlPort);
+					mysqlPort = Convert.ToInt32(mysqlPortString);
 				}
 				catch (Exception ex)
 				{
@@ -95,7 +95,6 @@ namespace SAMLPortal.Controllers
 				{
 					if (ex is MySqlException)
 					{
-						Console.WriteLine(ex.Message);
 						ModelState.AddModelError(string.Empty, ex.Message);
 					}
 					else
@@ -277,7 +276,7 @@ namespace SAMLPortal.Controllers
 				return Redirect("3");
 			}
 
-			if (ModelState.IsValid)
+			if (ModelState.IsValid && model != null)
 			{
 				GlobalSettings.Store("LDAP_SearchBase", model.SearchBase);
 				GlobalSettings.Store("LDAP_AdminFilter", model.AdminFilter);
@@ -322,7 +321,7 @@ namespace SAMLPortal.Controllers
 				return Redirect("4");
 			}
 
-			if (ModelState.IsValid)
+			if (ModelState.IsValid && model != null)
 			{
 				GlobalSettings.Store("LDAP_Attr_DisplayName", model.DisplayName);
 				GlobalSettings.Store("LDAP_Attr_UID", model.UID);
@@ -343,7 +342,7 @@ namespace SAMLPortal.Controllers
 		/// </summary>
 		/// <param name="step"></param>
 		/// <returns></returns>
-		private bool CheckStep(int step)
+		private static bool CheckStep(int step)
 		{
 			if (step - GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") <= 1)
 			{
@@ -358,12 +357,18 @@ namespace SAMLPortal.Controllers
 
 	public class SetupAsyncActionFilter : IAsyncActionFilter
 	{
+		ActionExecutionDelegate _next;
 		public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 		{
+			_next = next;
+
 			if (GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") > 5)
 			{
-				// Setup has been completed and cannot be accessed anymore
-				context.HttpContext.Response.Redirect("/");
+				if (context != null)
+				{
+					// Setup has been completed and cannot be accessed anymore
+					context.HttpContext.Response.Redirect("/");
+				}
 			}
 			else
 			{

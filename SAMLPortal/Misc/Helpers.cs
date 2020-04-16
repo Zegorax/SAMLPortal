@@ -155,7 +155,7 @@ namespace SAMLPortal.Misc
 		/// <param name="value">Value of the environment variable</param>
 		public static void WriteEnvVariableToFile(string filePath, string key, string value)
 		{
-			if (!key.Contains(" ") && !value.Contains(" "))
+			if (key != null && value != null && !key.Contains(" ") && !value.Contains(" "))
 			{
 				using (StreamWriter sw = System.IO.File.AppendText(filePath))
 				{
@@ -182,7 +182,7 @@ namespace SAMLPortal.Misc
 		/// </summary>
 		/// <param name="filePath">Path of the file to edit</param>
 		/// <param name="variable">Environment variable to search for</param>
-		/// <param name="value">Value to set to the envrionment variable</param>
+		/// <param name="value">Value to set to the environment variable</param>
 		public static void ReplaceEnvVariableInFile(string filePath, string variable, string value)
 		{
 			bool hasFoundVariable = false;

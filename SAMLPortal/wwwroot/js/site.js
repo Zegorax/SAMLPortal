@@ -5,20 +5,18 @@
 function getResultsFromFilters()
 {
 	let uri = "/api/setup/getResultsFromFilters";
-	let results = [];
 	let testUsername = document.getElementById("testUsername").value;
 
 	fetch(uri, {
 		method: "POST",
 		headers: {
-			'Content-Type' : 'application/json'
+			"Content-Type" : "application/json"
 		},
 		body: JSON.stringify(testUsername)
 	})
-	.then(response => response.json())
+	.then((response) => response.json())
 	.then((response) => {
-		console.log(response);
-		let values = response['value']
+		let values = response.value;
 
 		if(Object.keys(values).length > 0)
 		{
@@ -33,15 +31,15 @@ function getResultsFromFilters()
 			for (var key in users)
 			{
 				var value = values[key];
-				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>"
+				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>";
 			}
 
-			resultsDiv.innerHTML += "<p>Results of Administrators filter :</p>"
+			resultsDiv.innerHTML += "<p>Results of Administrators filter :</p>";
 
 			for (var key in admins)
 			{
 				var value = values[key];
-				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>"
+				resultsDiv.innerHTML += "<div class='alert alert-primary' role='alert'>" + value + "</div>";
 			}
 		}
 	})

@@ -19,7 +19,6 @@ namespace SAMLPortal.Middlewares
 		public Task Invoke(HttpContext httpContext)
 		{
 			var configurationStep = GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP");
-			string requestPath = httpContext.Request.Path.ToString().ToLower();
 
 			if (configurationStep < 6)
 			{
@@ -36,7 +35,6 @@ namespace SAMLPortal.Middlewares
 					httpContext.Response.Redirect("/Setup/" + configurationStep);
 				}
 			}
-
 			return _next(httpContext);
 		}
 	}

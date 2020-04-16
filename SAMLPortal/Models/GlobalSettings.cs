@@ -35,7 +35,8 @@ namespace SAMLPortal.Models
 					var fileConfigPath = configurationPath + "config.env";
 					if (!File.Exists(fileConfigPath))
 					{
-						using (FileStream fs = File.Create(fileConfigPath)) { }
+						FileStream fs = File.Create(fileConfigPath);
+						fs.Close();
 						Helpers.WriteEnvVariableToFile(fileConfigPath, "SP_CONFIG_SETUPASSISTANT_STEP", "0");
 					}
 
@@ -50,12 +51,12 @@ namespace SAMLPortal.Models
 				}
 				else
 				{
-					throw new Exception("The directory " + configurationPath + " does not exists. Please create it first.");
+					throw new NotSupportedException("The directory " + configurationPath + " does not exists. Please create it first.");
 				}
 			}
 			else
 			{
-				throw new Exception("Environment variable SP_CONFIG_PATH undefined. Please set it to a correct directory.");
+				throw new NotSupportedException("Environment variable SP_CONFIG_PATH undefined. Please set it to a correct directory.");
 			}
 		}
 
@@ -164,7 +165,7 @@ namespace SAMLPortal.Models
 			{
 				return Convert.ToInt32(_appSettings[key]);
 			}
-			catch (Exception)
+			catch (Exception e) when (e is KeyNotFoundException)
 			{
 				return null;
 			}

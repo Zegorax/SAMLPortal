@@ -60,7 +60,7 @@ namespace SAMLPortal.Controllers.API
 				}
 				catch (ArgumentNullException ex)
 				{
-					return Ok(Json(new { Error = "An error occured.", Message = ex.Message }));
+					return Ok(Json(new { Error = "An error occurred.", Message = ex.Message }));
 				}
 			}
 			else
