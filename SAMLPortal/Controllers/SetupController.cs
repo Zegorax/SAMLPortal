@@ -359,8 +359,6 @@ namespace SAMLPortal.Controllers
 	{
 		public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
 		{
-			_next = next;
-
 			if (GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") > 5)
 			{
 				if (context != null)
