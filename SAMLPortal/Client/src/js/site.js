@@ -20,6 +20,11 @@ import '../css/site.css';
 
 console.log('The \'site\' bundle has been loaded!');
 
+// Navbar button
+$(document).ready(function () {
+	$('.sidenav').sidenav();
+});
+
 // Write your JavaScript code.
 function getResultsFromFilters()
 {
