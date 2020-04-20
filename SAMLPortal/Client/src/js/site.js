@@ -1,15 +1,16 @@
 // Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
-// JS Dependencies: Bootstrap & JQuery
-import 'bootstrap';
+// JS Dependencies:  JQuery
+import 'materialize-css';
 import 'jquery';
 // Using the next two lines is like including partial view _ValidationScriptsPartial.cshtml
 import 'jquery-validation';
 import 'jquery-validation-unobtrusive';
 
-// CSS Dependencies: Bootstrap
-import 'bootstrap/dist/css/bootstrap.css';
+// CSS Dependencies: Materialize
+import 'materialize-css/dist/css/materialize.min.css';
+import 'materialize-css/dist/js/materialize.min.js';
 
 // Custom JS imports
 // ... none at the moment
