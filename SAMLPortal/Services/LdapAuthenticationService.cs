@@ -49,7 +49,8 @@ namespace SAMLPortal.Services
 							_connection.Bind(user.Dn, password);
 							if (_connection.Bound)
 							{
-								var memberships = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_MemberOf")).StringValueArray;
+								// TODO: Check if attribute is not null
+								// var memberships = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_MemberOf")).StringValueArray;
 
 								return new AppUser
 								{
@@ -57,7 +58,7 @@ namespace SAMLPortal.Services
 									Username = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_UID")).StringValue,
 									Email = user.GetAttribute(GlobalSettings.Get("LDAP_Attr_Mail")).StringValue,
 									IsAdmin = filter == adminSearchFilter,
-									Memberships = memberships
+									Memberships = new string[] { "" }
 								};
 							}
 						}
@@ -67,7 +68,7 @@ namespace SAMLPortal.Services
 							throw new Exception("Invalid username or password");
 						}
 					}
-					catch
+					catch (Exception e)
 					{
 						throw new Exception("Invalid username or password");
 					}
