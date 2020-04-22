@@ -18,6 +18,8 @@ using Pomelo.EntityFrameworkCore.MySql.Storage;
 using SAMLPortal.Misc;
 using SAMLPortal.Models;
 using SAMLPortal.Services;
+using SAMLPortal.Middlewares;
+using SAMLPortal.Controllers;
 
 namespace SAMLPortal
 {
@@ -33,7 +35,10 @@ namespace SAMLPortal
 		// This method gets called by the runtime. Use this method to add services to the container.
 		public void ConfigureServices(IServiceCollection services)
 		{
+			GlobalSettings.InitSettingsFromEnvironment();
+
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
+			services.AddScoped<SetupAsyncActionFilter>();
 
 			GlobalSettings.InitSettingsFromEnvironment();
 
@@ -58,16 +63,10 @@ namespace SAMLPortal
 			});
 
 			services.AddControllersWithViews();
-
-			//var isAdminUserPolicy = new AuthorizationPolicyBuilder().RequireRole(UserRoles.Administrator).Build();
-			//services.AddMvc(options =>
-			//{
-			//    options.Filters.Add(new ApplyPolicyOrAuthorizeFilter(isAdminUserPolicy));
-			//});
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-		public void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
+		public static void Configure(IApplicationBuilder app, IWebHostEnvironment env, SAMLPortalContext context)
 		{
 			if (env.IsDevelopment())
 			{
@@ -75,11 +74,12 @@ namespace SAMLPortal
 			}
 			else
 			{
-				app.UseExceptionHandler("/Home/Error");
-				context.Database.Migrate();
+				app.UseExceptionHandler("/Error");
+				if (GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") > 5)
+				{
+					context.Database.Migrate();
+				}
 			}
-
-			GlobalSettings.GenerateSigningCertificate();
 
 			app.UseStaticFiles();
 
@@ -88,11 +88,11 @@ namespace SAMLPortal
 			app.UseAuthentication();
 			app.UseAuthorization();
 
+			app.UseSetupAssistantMiddleware();
+
 			app.UseEndpoints(endpoints =>
 			{
-				endpoints.MapControllerRoute(
-					name: "default",
-					pattern: "{controller=Home}/{action=Index}");
+				endpoints.MapControllers();
 			});
 
 			//SAMLPortalContext context = new SAMLPortalContext();

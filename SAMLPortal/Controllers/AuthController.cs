@@ -111,41 +111,8 @@ namespace SAMLPortal.Controllers
 		[Route("Logout")]
 		public IActionResult Logout()
 		{
-			var requestBinding = new Saml2PostBinding();
-			//var verifiedApp = ValidateApp(ReadAppFromRequest(requestBinding));
-			var verifiedApp = new App();
-
-			// Logout from other app via SAML request
-			if (verifiedApp != null)
-			{
-				//var saml2LogoutRequest = new Saml2LogoutRequest(_samlConfig);
-				//X509Certificate2 signatureValidationCertificate = new X509Certificate2();
-				//signatureValidationCertificate.Import(verifiedApp.SignatureValidationCertificate);
-				//saml2LogoutRequest.SignatureValidationCertificates.Append(signatureValidationCertificate);
-
-				try
-				{
-					//requestBinding.Unbind(Request.ToGenericHttpRequest(), saml2LogoutRequest);
-					HttpContext.SignOutAsync("SAMLPortal");
-
-					return Redirect("/");
-					//return LogoutResponse(saml2LogoutRequest.Id, Saml2StatusCodes.Success, requestBinding.RelayState, saml2LogoutRequest.SessionIndex, verifiedApp);
-				}
-				catch (Exception ex)
-				{
-#if DEBUG
-					//Debug.WriteLine($"Saml 2.0 Logout Request error: {ex.ToString()}\nSaml Logout Request: '{saml2LogoutRequest.XmlDocument?.OuterXml}'");
-#endif
-					HttpContext.SignOutAsync("SAMLPortal");
-					return Redirect("/");
-					//return LogoutResponse(saml2LogoutRequest.Id, Saml2StatusCodes.Responder, requestBinding.RelayState, saml2LogoutRequest.SessionIndex, verifiedApp);
-				}
-			}
-			else
-			{
-				HttpContext.SignOutAsync("SAMLPortal");
-				return Redirect("/");
-			}
+			HttpContext.SignOutAsync("SAMLPortal");
+			return Redirect("/");
 		}
 
 		[Route("StartRequest")]
@@ -183,7 +150,6 @@ namespace SAMLPortal.Controllers
 		/// <returns></returns>
 		private string ReadAppFromRequest<T>(Saml2Binding<T> binding)
 		{
-			var test = new Saml2AuthnRequest(_samlConfig);
 			return binding.ReadSamlRequest(Request.ToGenericHttpRequest(), new Saml2AuthnRequest(_samlConfig))?.Issuer;
 		}
 
@@ -192,7 +158,7 @@ namespace SAMLPortal.Controllers
 		/// </summary>
 		/// <param name="issuer"></param>
 		/// <returns></returns>
-		private App ValidateApp(string issuer)
+		private static App ValidateApp(string issuer)
 		{
 			SAMLPortalContext context = new SAMLPortalContext();
 
@@ -219,7 +185,7 @@ namespace SAMLPortal.Controllers
 				saml2AuthnResponse.NameId = new Saml2NameIdentifier(claimsIdentity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).Single(), NameIdentifierFormats.Persistent);
 				saml2AuthnResponse.ClaimsIdentity = claimsIdentity;
 
-				var token = saml2AuthnResponse.CreateSecurityToken(app.Issuer, subjectConfirmationLifetime : 5, issuedTokenLifetime : 60);
+				saml2AuthnResponse.CreateSecurityToken(app.Issuer, subjectConfirmationLifetime : 5, issuedTokenLifetime : 60);
 			}
 
 			return responseBinding.Bind(saml2AuthnResponse).ToActionResult();
@@ -240,54 +206,5 @@ namespace SAMLPortal.Controllers
 
 			return responseBinding.Bind(saml2LogoutResponse).ToActionResult();
 		}
-
-		//[Route("AutoDetect")]
-		//[HttpGet]
-		//public IActionResult AutoDetect(LoginViewModel model)
-		//{
-		//    SAMLPortalContext context = new SAMLPortalContext();
-
-		//    var entityDescriptor = new EntityDescriptor();
-		//    entityDescriptor.ReadSPSsoDescriptorFromUrl(new Uri("http://localhost:8090/users/auth/saml/metadata"));
-
-		//    if (entityDescriptor.SPSsoDescriptor != null)
-		//    {
-
-		//        App gitlabApp = new App();
-		//        gitlabApp.Description = "The best GitHub alternative";
-		//        gitlabApp.Enabled = true;
-		//        gitlabApp.Issuer = "GITLAB-ISSUER";
-		//        gitlabApp.MetadataURL = "http://localhost:8090/users/auth/saml/metadata";
-		//        gitlabApp.Name = "Gitlab";
-		//        gitlabApp.SignatureValidationCertificate = "";
-		//        gitlabApp.SingleLogoutResponseDestination = new Uri("http://localhost/logout");
-		//        gitlabApp.SingleSignOnDestination = entityDescriptor.SPSsoDescriptor.AssertionConsumerServices.First().Location;
-
-		//        context.Add(gitlabApp);
-		//        context.SaveChanges();
-		//    }
-
-		//    return Redirect("/");
-
-		//}
-
-		//Future code to be placed in another controller. Used to get informations from MetadataURL and populate our App model on request from the admin page
-		//if (string.IsNullOrEmpty(rp.Issuer))
-		//{
-		//    var entityDescriptor = new EntityDescriptor();
-		//    entityDescriptor.ReadSPSsoDescriptorFromUrl(new Uri(rp.Metadata));
-		//    if (entityDescriptor.SPSsoDescriptor != null)
-		//    {
-		//        rp.Issuer = entityDescriptor.EntityId;
-		//        rp.SingleSignOnDestination = entityDescriptor.SPSsoDescriptor.AssertionConsumerServices.First().Location;
-		//        var singleLogoutService = entityDescriptor.SPSsoDescriptor.SingleLogoutServices.First();
-		//        rp.SingleLogoutResponseDestination = singleLogoutService.ResponseLocation ?? singleLogoutService.Location;
-		//        rp.SignatureValidationCertificate = entityDescriptor.SPSsoDescriptor.SigningCertificates.First();
-		//    }
-		//    else
-		//    {
-		//        throw new Exception($"SPSsoDescriptor not loaded from metadata '{rp.Metadata}'.");
-		//    }
-		//}
 	}
 }
