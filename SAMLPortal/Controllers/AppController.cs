@@ -12,18 +12,23 @@ using Microsoft.EntityFrameworkCore;
 namespace SAMLPortal.Controllers
 {
 	[Authorize]
+	[Route("App")]
 	public class AppController : Controller
     {
         // GET: App
         public ActionResult Index()
         {
-            return View();
+			SAMLPortalContext context = new SAMLPortalContext();
+            return View(context.App.ToList());
         }
 
         // GET: App/Details/5
+		[Route("Details/{id}")]
         public ActionResult Details(int id)
         {
-            return View();
+			SAMLPortalContext context = new SAMLPortalContext();
+			App app = context.App.Find(id);
+            return View(app);
         }
 
 		// GET: App/Create
@@ -43,8 +48,7 @@ namespace SAMLPortal.Controllers
 		[AllowAnonymous] //just pour tester
 		//[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Create")]
-		public async Task<IActionResult> Create(
-			[Bind("Name, Description, Enabled, MetadataURL, Issuer, SingleSignOnDestination, SingleLogoutResponseDestination, SignatureValidationCertificate")] App appli)
+		public async Task<IActionResult> Create(App appli)
         {
 			try
 			{
@@ -54,7 +58,7 @@ namespace SAMLPortal.Controllers
 					
 					context.Add(appli);
 					await context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
+					return Redirect("/");
 				}
 			}
 			catch (DbUpdateException /* ex */)
@@ -70,7 +74,7 @@ namespace SAMLPortal.Controllers
 		// GET: App/Edit/5
 		[AllowAnonymous] //just pour tester
 		//[Authorize(Roles = UserRoles.Administrator)]
-		[Route("Edit")]
+		[Route("Edit/{id}")]
 		public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -116,7 +120,7 @@ namespace SAMLPortal.Controllers
 				try
 				{
 					await context.SaveChangesAsync();
-					return RedirectToAction(nameof(Index));
+					return Redirect("/");
 				}
 				catch (DbUpdateException /* ex */)
 				{
@@ -167,7 +171,7 @@ namespace SAMLPortal.Controllers
             var app = await context.App.FindAsync(id);
             if (app == null)
             {
-                return RedirectToAction(nameof(Index));
+					return Redirect("/");
             }
 
             try

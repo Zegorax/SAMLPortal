@@ -44,7 +44,7 @@ namespace SAMLPortal.Models
 					Environment.SetEnvironmentVariable("SP_CONFIG_FILE", fileConfigPath);
 					UpdateFromEnvironment();
 
-					if (Environment.GetEnvironmentVariable("SP_MYSQL_USER") != null)
+					if (Environment.GetEnvironmentVariable("SP_CONFIG_SETUPASSISTANT_STEP") != "0")
 					{
 						UpdateFromDatabase();
 					}
