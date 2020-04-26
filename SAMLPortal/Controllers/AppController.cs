@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 using SAMLPortal.Misc;
 using SAMLPortal.Models;
 using Microsoft.EntityFrameworkCore;
+using ITfoxtec.Identity.Saml2.Schemas.Metadata;
+using SAMLPortal.Misc;
 
 namespace SAMLPortal.Controllers
 {
@@ -16,13 +18,17 @@ namespace SAMLPortal.Controllers
 	public class AppController : Controller
     {
         // GET: App
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
         public ActionResult Index()
         {
 			SAMLPortalContext context = new SAMLPortalContext();
-            return View(context.App.ToList());
+            otreturn View(context.App.ToList());
         }
 
         // GET: App/Details/5
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Details/{id}")]
         public ActionResult Details(int id)
         {
@@ -55,7 +61,9 @@ namespace SAMLPortal.Controllers
 				SAMLPortalContext context = new SAMLPortalContext();
 				if(ModelState.IsValid)
 				{
-					
+					if(appli.MetadataURL != null) {
+						
+					}
 					context.Add(appli);
 					await context.SaveChangesAsync();
 					return Redirect("/");
@@ -92,11 +100,11 @@ namespace SAMLPortal.Controllers
         }
 
         // POST: App/Edit/5
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
 		//[Authorize(Roles = UserRoles.Administrator)]
-		[Route("Edit")]
+		[Route("Edit/{id}")]
 		public async Task<IActionResult> EditPost(int? id)
         {
 			if (id == null)
@@ -114,8 +122,7 @@ namespace SAMLPortal.Controllers
 				s => s.MetadataURL,
 				s => s.Issuer,
 				s => s.SingleSignOnDestination,
-				s => s.SingleLogoutResponseDestination,
-				s => s.SignatureValidationCertificate))
+				s => s.SingleLogoutResponseDestination))
 			{
 				try
 				{
@@ -136,7 +143,7 @@ namespace SAMLPortal.Controllers
 		// GET: App/Delete/5
 		[AllowAnonymous] //just pour tester
 		//[Authorize(Roles = UserRoles.Administrator)]
-		[Route("Delete")]
+		[Route("Delete/{id}")]
 		public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
         {
 			if(id == null)
@@ -160,11 +167,11 @@ namespace SAMLPortal.Controllers
         }
 
         // POST: App/Delete/5
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
         [ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
 		//[Authorize(Roles = UserRoles.Administrator)]
-		[Route("Delete")]
+		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
         {
 			SAMLPortalContext context = new SAMLPortalContext();
@@ -186,5 +193,35 @@ namespace SAMLPortal.Controllers
                 return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
             }
         }
+
+		// Post: App/VerifyMetadata
+		[HttpPost]
+		[ValidateAntiForgeryToken]
+		[AllowAnonymous] //just pour tester
+		//[Authorize(Roles = UserRoles.Administrator)]
+		[Route("VerifyMetadata")]
+		public async Task<IActionResult> VerifyMetadata(AppWithMandatoryFields app) {
+			App appli = new App();
+			if(ModelState.IsValid)
+			{
+				var entityDescriptor = new EntityDescriptor();
+				appli.Name = app.Name;
+				appli.Description = app.Description;
+				entityDescriptor.ReadSPSsoDescriptorFromUrl(new Uri(app.MetadataURL));
+				if (entityDescriptor.SPSsoDescriptor != null) {
+					appli.Issuer = entityDescriptor.EntityId;
+					appli.SingleSignOnDestination = entityDescriptor.SPSsoDescriptor.AssertionConsumerServices.First().Location;
+					if(entityDescriptor.SPSsoDescriptor.SingleLogoutServices.Count() > 0) {
+						var singleLogoutService = entityDescriptor.SPSsoDescriptor.SingleLogoutServices.First();
+						appli.SingleLogoutResponseDestination = singleLogoutService.ResponseLocation ?? singleLogoutService.Location;
+					} else {
+						appli.SingleLogoutResponseDestination = new Uri("about:blank");
+					}
+				} else {
+					appli.MetadataURL = ""; //pas de metadataURL donc on a tout fait à la main
+				}
+			}
+			return View("Create", appli);
+		}
     }
 }

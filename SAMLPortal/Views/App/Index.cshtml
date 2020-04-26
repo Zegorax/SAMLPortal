@@ -9,13 +9,7 @@
 <p>
     @Html.ActionLink("Create New", "Create")
 </p>
-@using (Html.BeginForm("Index", "App", FormMethod.Get))
-{
-    <p>
-        Find by name: @Html.TextBox("SearchString", ViewBag.CurrentFilter as string)
-        <input type="submit" value="Search" />
-    </p>
-}
+
 <table class="table">
     <tr>
         <th>
@@ -51,9 +45,6 @@
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.SingleLogoutResponseDestination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SignatureValidationCertificate)
             </td>
             <td>
                 @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |

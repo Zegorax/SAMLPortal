@@ -47,6 +47,7 @@ namespace SAMLPortal.Models
 					if (Environment.GetEnvironmentVariable("SP_CONFIG_SETUPASSISTANT_STEP") != "0")
 					{
 						UpdateFromDatabase();
+						GenerateSigningCertificate();
 					}
 				}
 				else

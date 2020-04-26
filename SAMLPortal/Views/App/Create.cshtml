@@ -48,12 +48,33 @@
                 <span asp-validation-for="SingleLogoutResponseDestination" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="SignatureValidationCertificate" class="control-label"></label>
-                <input asp-for="SignatureValidationCertificate" class="form-control" />
-                <span asp-validation-for="SignatureValidationCertificate" class="text-danger"></span>
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+		<form asp-action="VerifyMetadata">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Enabled" /> @Html.DisplayNameFor(model => model.Enabled)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetadataURL" class="control-label"></label>
+                <input asp-for="MetadataURL" class="form-control" />
+                <span asp-validation-for="MetadataURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="VerifyMetadata" class="btn btn-primary" />
             </div>
         </form>
     </div>
