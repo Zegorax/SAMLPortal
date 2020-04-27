@@ -16,7 +16,7 @@ namespace SAMLPortal.Controllers
 	[Route("")]
 	public class HomeController : Controller
 	{
-		[AllowAnonymous]
+		[Authorize(Roles = UserRoles.User)]
 		[Route("")]
 		public IActionResult Index()
 		{
@@ -24,7 +24,7 @@ namespace SAMLPortal.Controllers
 		}
 
 		[Authorize(Roles = UserRoles.User)]
-		[Route("Privacy")]
+		[Route("Account")]
 		public IActionResult Privacy()
 		{
 			ClaimsPrincipal currentUser = this.User;
