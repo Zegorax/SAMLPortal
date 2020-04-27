@@ -46,6 +46,11 @@ namespace SAMLPortal.Controllers
 		[Route("Login")]
 		public async Task<IActionResult> Login()
 		{
+			if (this.User.Identity.IsAuthenticated)
+			{
+				return Redirect("/");
+			}
+
 			LoginViewModel emptyLogin = new LoginViewModel();
 			emptyLogin.Username = "";
 			emptyLogin.Password = "";
@@ -58,6 +63,10 @@ namespace SAMLPortal.Controllers
 		[Route("Login")]
 		public async Task<IActionResult> Login(LoginViewModel model)
 		{
+			if (this.User.Identity.IsAuthenticated)
+			{
+				return Redirect("/");
+			}
 
 			if (ModelState.IsValid)
 			{
@@ -106,7 +115,6 @@ namespace SAMLPortal.Controllers
 						{
 							return Redirect("/");
 						}
-						return Redirect("/");
 					}
 				}
 				catch (Exception ex)
@@ -136,7 +144,7 @@ namespace SAMLPortal.Controllers
 
 		}
 
-		[Route("StartRequest")]
+		[Route("StartRequest/{id}")]
 		public IActionResult StartRequest(int id)
 		{
 			SAMLPortalContext context = new SAMLPortalContext();
@@ -144,7 +152,14 @@ namespace SAMLPortal.Controllers
 
 			if (requestedApp != null)
 			{
-				return ComputeRequest(requestedApp);
+				if (AccessControl(requestedApp))
+				{
+					return LoginResponse(new Saml2Id(), Saml2StatusCodes.Success, "", requestedApp, null, this.User.Claims);
+				}
+				else
+				{
+					return LoginResponse(new Saml2Id(), Saml2StatusCodes.RequestDenied, "", requestedApp, null, this.User.Claims);
+				}
 			}
 			else
 			{
@@ -178,7 +193,7 @@ namespace SAMLPortal.Controllers
 			}
 			else
 			{
-				return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.AuthnFailed, requestBinding.RelayState, app);
+				return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.RequestDenied, requestBinding.RelayState, app);
 			}
 		}
 
