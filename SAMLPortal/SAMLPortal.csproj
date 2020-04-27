@@ -1,34 +1,80 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-  <PropertyGroup>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1"/>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1"/>
-    <PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.0.3"/>
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0"/>
-    <PackageReference Include="ITfoxtec.Identity.Saml2.MvcCore" Version="4.0.5"/>
-    <PackageReference Include="DotNetEnv" Version="1.4.0"/>
-    <PackageReference Include="BouncyCastle.NetCore" Version="1.8.5"/>
-    <PackageReference Include="CountryData.Standard" Version="*"/>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Misc\"/>
-    <Folder Include="Services\"/>
-    <Folder Include="Views\Auth\"/>
-    <Folder Include="Migrations\"/>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".env.example"/>
-  </ItemGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<MpaRoot>Client\</MpaRoot>
+		<WWWRoot>wwwroot\</WWWRoot>
+		<DefaultItemExcludes>$(DefaultItemExcludes);$(MpaRoot)node_modules\**</DefaultItemExcludes>
+	</PropertyGroup>
+	<ItemGroup>
+		<!-- Don't publish the MPA source files, but do show them in the project files list -->
+		<Content Remove="$(MpaRoot)**" />
+		<None Remove="$(MpaRoot)**" />
+		<None Include="$(MpaRoot)**" Exclude="$(MpaRoot)node_modules\**" />
+	</ItemGroup>
+
+	<Target Name="NpmInstall" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(MpaRoot)node_modules') ">
+		<!-- Ensure Node.js is installed -->
+		<Exec Command="node --version" ContinueOnError="true">
+			<Output TaskParameter="ExitCode" PropertyName="ErrorCode" />
+		</Exec>
+		<Error Condition="'$(ErrorCode)' != '0'" Text="Node.js is required to build and run this project. To continue, please install Node.js from https://nodejs.org/, and then restart your command prompt or IDE." />
+		<Message Importance="high" Text="Restoring dependencies using 'npm'. This may take several minutes..." />
+		<Exec WorkingDirectory="$(MpaRoot)" Command="npm install" />
+	</Target>
+
+	<Target Name="NpmRunBuild" BeforeTargets="Build" DependsOnTargets="NpmInstall">
+		<Exec WorkingDirectory="$(MpaRoot)" Command="npm run build" />
+	</Target>
+
+	<Target Name="PublishRunWebpack" AfterTargets="ComputeFilesToPublish">
+		<!-- Include the newly-built files in the publish output -->
+		<ItemGroup>
+			<DistFiles Include="$(WWWRoot)dist\**" />
+			<ResolvedFileToPublish Include="@(DistFiles->'%(FullPath)')" Exclude="@(ResolvedFileToPublish)">
+				<RelativePath>%(DistFiles.Identity)</RelativePath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+				<ExcludeFromSingleFile>true</ExcludeFromSingleFile>
+			</ResolvedFileToPublish>
+		</ItemGroup>
+	</Target>
+	<Target Name="NpmClean" BeforeTargets="Clean">
+		<RemoveDir Directories="$(WWWRoot)dist" />
+	</Target>
+	<ItemGroup>
+		<None Remove="Client\src\js\validation.js" />
+	</ItemGroup>
+	<ItemGroup>
+		<Content Include="Client\src\css\site.css" />
+		<Content Include="Client\src\js\validation.js" />
+		<Content Include="Client\src\js\site.js" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.1">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.3">
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="3.1.1" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.1" />
+		<PackageReference Include="Novell.Directory.Ldap.NETStandard" Version="3.0.3" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.2.0" />
+		<PackageReference Include="ITfoxtec.Identity.Saml2.MvcCore" Version="4.0.5" />
+		<PackageReference Include="DotNetEnv" Version="1.4.0" />
+		<PackageReference Include="BouncyCastle.NetCore" Version="1.8.5" />
+		<PackageReference Include="CountryData.Standard" Version="*" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="Misc\" />
+		<Folder Include="Services\" />
+		<Folder Include="Views\Auth\" />
+		<Folder Include="Migrations\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include=".env.example" />
+	</ItemGroup>
 </Project>

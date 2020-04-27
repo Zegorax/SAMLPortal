@@ -79,7 +79,7 @@ namespace SAMLPortal.Services
 							throw new Exception("Invalid username or password");
 						}
 					}
-					catch
+					catch (Exception e)
 					{
 						throw new Exception("Invalid username or password");
 					}
