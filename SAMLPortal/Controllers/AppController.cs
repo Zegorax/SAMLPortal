@@ -16,53 +16,54 @@ namespace SAMLPortal.Controllers
 	[Authorize]
 	[Route("App")]
 	public class AppController : Controller
-    {
-        // GET: App
+	{
+		// GET: App
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
-        public ActionResult Index()
-        {
+						 //[Authorize(Roles = UserRoles.Administrator)]
+		public ActionResult Index()
+		{
 			SAMLPortalContext context = new SAMLPortalContext();
-            otreturn View(context.App.ToList());
-        }
+			return View(context.App.ToList());
+		}
 
-        // GET: App/Details/5
+		// GET: App/Details/5
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Details/{id}")]
-        public ActionResult Details(int id)
-        {
+		public ActionResult Details(int id)
+		{
 			SAMLPortalContext context = new SAMLPortalContext();
 			App app = context.App.Find(id);
-            return View(app);
-        }
+			return View(app);
+		}
 
 		// GET: App/Create
-        [HttpGet]
+		[HttpGet]
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Create")]
 		public ActionResult Create()
-        {
+		{
 			App emptyApp = new App();
-            return View(emptyApp);
-        }
+			return View(emptyApp);
+		}
 
 		// Post: App/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Create")]
 		public async Task<IActionResult> Create(App appli)
-        {
+		{
 			try
 			{
 				SAMLPortalContext context = new SAMLPortalContext();
-				if(ModelState.IsValid)
+				if (ModelState.IsValid)
 				{
-					if(appli.MetadataURL != null) {
-						
+					if (appli.MetadataURL != null)
+					{
+
 					}
 					context.Add(appli);
 					await context.SaveChangesAsync();
@@ -76,37 +77,37 @@ namespace SAMLPortal.Controllers
 					"Try again, and if the problem persists " +
 					"see your system administrator.");
 			}
-            return View(appli);
-        }
+			return View(appli);
+		}
 
 		// GET: App/Edit/5
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Edit/{id}")]
 		public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+		{
+			if (id == null)
+			{
+				return NotFound();
+			}
 
 			SAMLPortalContext context = new SAMLPortalContext();
-            var app = await context.App.FindAsync(id);
-            if (app == null)
-            {
-                return NotFound();
-            }
-            return View(app);
-        }
+			var app = await context.App.FindAsync(id);
+			if (app == null)
+			{
+				return NotFound();
+			}
+			return View(app);
+		}
 
-        // POST: App/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+		// POST: App/Edit/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Edit/{id}")]
 		public async Task<IActionResult> EditPost(int? id)
-        {
+		{
 			if (id == null)
 			{
 				return NotFound();
@@ -138,90 +139,97 @@ namespace SAMLPortal.Controllers
 				}
 			}
 			return View(appToUpdate);
-        }
+		}
 
 		// GET: App/Delete/5
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
-        {
-			if(id == null)
+		{
+			if (id == null)
 			{
 				return NotFound();
 			}
 			SAMLPortalContext context = new SAMLPortalContext();
 			var app = await context.App.AsNoTracking().FirstOrDefaultAsync(m => m.Id == id);
-			if(app == null)
+			if (app == null)
 			{
 				return NotFound();
 			}
 
-			if(saveChangesError.GetValueOrDefault())
+			if (saveChangesError.GetValueOrDefault())
 			{
 				ViewData["ErrorMessage"] =
 					"Delete failed. Try again, and if the problem persists " +
 					"see your system administrator.";
 			}
-            return View(app);
-        }
+			return View(app);
+		}
 
-        // POST: App/Delete/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+		// POST: App/Delete/5
+		[HttpPost]
+		[ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+		{
 			SAMLPortalContext context = new SAMLPortalContext();
-            var app = await context.App.FindAsync(id);
-            if (app == null)
-            {
-					return Redirect("/");
-            }
+			var app = await context.App.FindAsync(id);
+			if (app == null)
+			{
+				return Redirect("/");
+			}
 
-            try
-            {
-                context.App.Remove(app);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            catch (DbUpdateException /* ex */)
-            {
-                //Log the error (uncomment ex variable name and write a log.)
-                return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
-            }
-        }
+			try
+			{
+				context.App.Remove(app);
+				await context.SaveChangesAsync();
+				return RedirectToAction(nameof(Index));
+			}
+			catch (DbUpdateException /* ex */)
+			{
+				//Log the error (uncomment ex variable name and write a log.)
+				return RedirectToAction(nameof(Delete), new { id = id, saveChangesError = true });
+			}
+		}
 
 		// Post: App/VerifyMetadata
 		[HttpPost]
 		[ValidateAntiForgeryToken]
 		[AllowAnonymous] //just pour tester
-		//[Authorize(Roles = UserRoles.Administrator)]
+						 //[Authorize(Roles = UserRoles.Administrator)]
 		[Route("VerifyMetadata")]
-		public async Task<IActionResult> VerifyMetadata(AppWithMandatoryFields app) {
+		public async Task<IActionResult> VerifyMetadata(AppWithMandatoryFields app)
+		{
 			App appli = new App();
-			if(ModelState.IsValid)
+			if (ModelState.IsValid)
 			{
 				var entityDescriptor = new EntityDescriptor();
 				appli.Name = app.Name;
 				appli.Description = app.Description;
 				entityDescriptor.ReadSPSsoDescriptorFromUrl(new Uri(app.MetadataURL));
-				if (entityDescriptor.SPSsoDescriptor != null) {
+				if (entityDescriptor.SPSsoDescriptor != null)
+				{
 					appli.Issuer = entityDescriptor.EntityId;
 					appli.SingleSignOnDestination = entityDescriptor.SPSsoDescriptor.AssertionConsumerServices.First().Location;
-					if(entityDescriptor.SPSsoDescriptor.SingleLogoutServices.Count() > 0) {
+					if (entityDescriptor.SPSsoDescriptor.SingleLogoutServices.Count() > 0)
+					{
 						var singleLogoutService = entityDescriptor.SPSsoDescriptor.SingleLogoutServices.First();
 						appli.SingleLogoutResponseDestination = singleLogoutService.ResponseLocation ?? singleLogoutService.Location;
-					} else {
+					}
+					else
+					{
 						appli.SingleLogoutResponseDestination = new Uri("about:blank");
 					}
-				} else {
+				}
+				else
+				{
 					appli.MetadataURL = ""; //pas de metadataURL donc on a tout fait à la main
 				}
 			}
 			return View("Create", appli);
 		}
-    }
+	}
 }
