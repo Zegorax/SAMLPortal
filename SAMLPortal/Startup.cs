@@ -82,13 +82,13 @@ namespace SAMLPortal
 			}
 
 			app.UseStaticFiles();
-
 			app.UseRouting();
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+			// Middlewares goes under this comment
 
 			app.UseSetupAssistantMiddleware();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

@@ -93,7 +93,7 @@ namespace SAMLPortal.Controllers
 			{
 				return NotFound();
 			}
-			return View(app);
+			return View("Edit", app);
 		}
 
 		// POST: App/Edit/5
@@ -114,6 +114,7 @@ namespace SAMLPortal.Controllers
 				"",
 				s => s.Name,
 				s => s.Description,
+				s => s.Role,
 				s => s.Enabled,
 				s => s.MetadataURL,
 				s => s.Issuer,
@@ -133,7 +134,7 @@ namespace SAMLPortal.Controllers
 						"see your system administrator.");
 				}
 			}
-			return View(appToUpdate);
+			return View("Edit", appToUpdate);
 		}
 
 		// GET: App/Delete/5

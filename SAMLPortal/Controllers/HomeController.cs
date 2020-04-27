@@ -25,7 +25,7 @@ namespace SAMLPortal.Controllers
 
 		[Authorize(Roles = UserRoles.User)]
 		[Route("Account")]
-		public IActionResult Privacy()
+		public IActionResult Account()
 		{
 			ClaimsPrincipal currentUser = this.User;
 			return View();

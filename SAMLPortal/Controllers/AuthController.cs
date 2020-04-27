@@ -33,11 +33,11 @@ namespace SAMLPortal.Controllers
 			_samlConfig = new Saml2Configuration
 			{
 				Issuer = GlobalSettings.Get("CONFIG_CompanyName") + "-MAIN-ISSUER",
-					SingleSignOnDestination = new Uri(GlobalSettings.Get("CONFIG_URL") + "/Auth/Login"),
-					SingleLogoutDestination = new Uri(GlobalSettings.Get("CONFIG_URL") + "/Auth/Logout"),
-					SigningCertificate = GlobalSettings._signingCertificate,
-					CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.ChainTrust,
-					RevocationMode = X509RevocationMode.NoCheck
+				SingleSignOnDestination = new Uri(GlobalSettings.Get("CONFIG_URL") + "/Auth/Login"),
+				SingleLogoutDestination = new Uri(GlobalSettings.Get("CONFIG_URL") + "/Auth/Logout"),
+				SigningCertificate = GlobalSettings._signingCertificate,
+				CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.ChainTrust,
+				RevocationMode = X509RevocationMode.NoCheck
 			};
 		}
 
@@ -96,6 +96,16 @@ namespace SAMLPortal.Controllers
 
 						var principal = new ClaimsPrincipal(new ClaimsIdentity(userClaims, _authService.GetType().Name));
 						await HttpContext.SignInAsync("SAMLPortal", principal);
+
+						string returnUrl = Request.Query["ReturnUrl"];
+						if (Url.IsLocalUrl(returnUrl))
+						{
+							return Redirect(returnUrl);
+						}
+						else
+						{
+							return Redirect("/");
+						}
 						return Redirect("/");
 					}
 				}
@@ -115,30 +125,73 @@ namespace SAMLPortal.Controllers
 			return Redirect("/");
 		}
 
-		[Route("StartRequest")]
-		public IActionResult StartRequest()
+		[Route("HandleRequest")]
+		public IActionResult HandleRequest()
 		{
 			var requestBinding = new Saml2RedirectBinding();
 			var requestedApp = ReadAppFromRequest(requestBinding);
 			var verifiedApp = ValidateApp(requestedApp);
 
-			var saml2AuthnRequest = new Saml2AuthnRequest(_samlConfig);
+			return ComputeRequest(verifiedApp);
 
-			try
+		}
+
+		[Route("StartRequest")]
+		public IActionResult StartRequest(int id)
+		{
+			SAMLPortalContext context = new SAMLPortalContext();
+			App requestedApp = context.App.Where(app => app.Id == id).Single();
+
+			if (requestedApp != null)
 			{
-				requestBinding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnRequest);
-				var sessionIndex = Guid.NewGuid().ToString();
-
-				return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.Success, requestBinding.RelayState, verifiedApp, sessionIndex, User.Claims);
+				return ComputeRequest(requestedApp);
 			}
-			catch (Exception ex)
+			else
 			{
+				return Content("You are not authorized");
+			}
+		}
+
+		private IActionResult ComputeRequest(App app)
+		{
+			var saml2AuthnRequest = new Saml2AuthnRequest(_samlConfig);
+			var requestBinding = new Saml2RedirectBinding();
+
+			if (AccessControl(app))
+			{
+				try
+				{
+					requestBinding.Unbind(Request.ToGenericHttpRequest(), saml2AuthnRequest);
+					var sessionIndex = Guid.NewGuid().ToString();
+
+					return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.Success, requestBinding.RelayState, app, sessionIndex, User.Claims);
+				}
+				catch (Exception ex)
+				{
 #if DEBUG
-				Debug.WriteLine($"Saml 2.0 Authn Request error: {ex.ToString()}\nSaml Auth Request: '{saml2AuthnRequest.XmlDocument?.OuterXml}'\nQuery String: {Request.QueryString}");
-				Debug.WriteLine(ex.StackTrace);
+					Debug.WriteLine($"Saml 2.0 Authn Request error: {ex.ToString()}\nSaml Auth Request: '{saml2AuthnRequest.XmlDocument?.OuterXml}'\nQuery String: {Request.QueryString}");
+					Debug.WriteLine(ex.StackTrace);
 #endif
 
-				return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.Responder, requestBinding.RelayState, verifiedApp);
+					return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.Responder, requestBinding.RelayState, app);
+				}
+			}
+			else
+			{
+				return LoginResponse(saml2AuthnRequest.Id, Saml2StatusCodes.AuthnFailed, requestBinding.RelayState, app);
+			}
+		}
+
+		private bool AccessControl(App app)
+		{
+			var roles = this.User.FindAll("membership").Select(r => r.Value).ToList();
+			if (roles.Contains(app.Role))
+			{
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 
@@ -173,8 +226,8 @@ namespace SAMLPortal.Controllers
 			var saml2AuthnResponse = new Saml2AuthnResponse(_samlConfig)
 			{
 				InResponseTo = inResponseTo,
-					Status = status,
-					Destination = app.SingleSignOnDestination
+				Status = status,
+				Destination = app.SingleSignOnDestination
 			};
 
 			if (status == Saml2StatusCodes.Success && claims != null)
@@ -185,7 +238,7 @@ namespace SAMLPortal.Controllers
 				saml2AuthnResponse.NameId = new Saml2NameIdentifier(claimsIdentity.Claims.Where(c => c.Type == ClaimTypes.NameIdentifier).Select(c => c.Value).Single(), NameIdentifierFormats.Persistent);
 				saml2AuthnResponse.ClaimsIdentity = claimsIdentity;
 
-				saml2AuthnResponse.CreateSecurityToken(app.Issuer, subjectConfirmationLifetime : 5, issuedTokenLifetime : 60);
+				saml2AuthnResponse.CreateSecurityToken(app.Issuer, subjectConfirmationLifetime: 5, issuedTokenLifetime: 60);
 			}
 
 			return responseBinding.Bind(saml2AuthnResponse).ToActionResult();
@@ -199,9 +252,9 @@ namespace SAMLPortal.Controllers
 			var saml2LogoutResponse = new Saml2LogoutResponse(_samlConfig)
 			{
 				InResponseTo = inResponseTo,
-					Status = status,
-					Destination = app.SingleLogoutResponseDestination,
-					SessionIndex = sessionIndex
+				Status = status,
+				Destination = app.SingleLogoutResponseDestination,
+				SessionIndex = sessionIndex
 			};
 
 			return responseBinding.Bind(saml2LogoutResponse).ToActionResult();

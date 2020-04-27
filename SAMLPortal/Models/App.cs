@@ -1,3 +1,4 @@
+using System.Data;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -20,7 +21,7 @@ namespace SAMLPortal.Models
 		public virtual string MetadataURL { get; set; } = "";
 
 		[Required]
-		public virtual string[] Roles { get; set;}
+		public virtual string Role { get; set; }
 
 		[Required]
 		public virtual string Issuer { get; set; }

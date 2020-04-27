@@ -31,13 +31,14 @@ namespace SAMLPortal.Models
 		{
 			OnModelCreatingPartial(modelBuilder);
 
-			var stringArrayConverter = new ValueConverter<string[], string>(
-			v => string.Join(";",v),
-			v => v.Split(";", StringSplitOptions.RemoveEmptyEntries));
+			// Will come later when adding multiple role to one app
+			// var stringArrayConverter = new ValueConverter<string[], string>(
+			// v => string.Join(";", v),
+			// v => v.Split(";", StringSplitOptions.RemoveEmptyEntries));
 
-			modelBuilder.Entity<App>()
-                .Property(e => e.Roles)
-                .HasConversion(stringArrayConverter);
+			// modelBuilder.Entity<App>()
+			// 	.Property(e => e.Roles)
+			// 	.HasConversion(stringArrayConverter);
 
 		}
 	}
