@@ -1,13 +1,15 @@
 ﻿@model SAMLPortal.Models.App
+@using System.Security.Cryptography.X509Certificates;
 
 @{
     ViewData["Title"] = "Create";
+	X509Certificate2 certificate = ViewBag.certificate;
 }
 
 <h1>Create</h1>
 
 <h4>App</h4>
-
+<p>Certificate fingerprint to use : @certificate.Thumbprint</p>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">

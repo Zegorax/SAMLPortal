@@ -30,6 +30,7 @@ namespace SAMLPortal.Controllers
 		{
 			SAMLPortalContext context = new SAMLPortalContext();
 			App app = context.App.Find(id);
+			ViewBag.certificate = GlobalSettings._signingCertificate;
 			return View(app);
 		}
 
@@ -39,6 +40,7 @@ namespace SAMLPortal.Controllers
 		public ActionResult Create()
 		{
 			App emptyApp = new App();
+			ViewBag.certificate = GlobalSettings._signingCertificate;
 			return View(emptyApp);
 		}
 
@@ -88,6 +90,7 @@ namespace SAMLPortal.Controllers
 			{
 				return NotFound();
 			}
+			ViewBag.certificate = GlobalSettings._signingCertificate;
 			return View("Edit", app);
 		}
 
