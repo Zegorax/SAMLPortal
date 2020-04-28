@@ -4,10 +4,10 @@ WORKDIR /app
 # Copy csproj and restore as distinct layers
 COPY SAMLPortal/*.csproj ./
 RUN dotnet restore
-RUN ls -al && cd Client && npm install
 
 # Copy everything else and build
 COPY . ./
+RUN cd SAMLPortal/Client && npm install
 RUN dotnet publish -c Release -o out
 
 # Build runtime image
