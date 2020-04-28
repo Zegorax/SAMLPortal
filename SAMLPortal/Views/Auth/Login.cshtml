@@ -2,27 +2,77 @@
 
 @{
     ViewData["Title"] = "Login";
+	Layout = "_LoginLayout";
 }
 
-<h1>Login</h1>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form method="POST">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Username" class="control-label"></label>
-                <input asp-for="Username" class="form-control" />
-                <span asp-validation-for="Username" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Log in" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="login-container">
+	<div class="row valign-wrapper">
+		<div class="login-box-wrapper col s12 valign">
+			<form method="POST">
+				<div class="login-shadow-box card blue-grey darken-1">
+					<div class="card-content white-text">
+						<span class="card-title">Login</span>
+						<p style="visibility: hidden;">This text is here to take place. A very long place</p>
+						<div class="row">
+							<div asp-validation-summary="ModelOnly" class="red-text text-accent-2"></div>
+							<div class="row">
+								<div class="input-field col s12">
+									<label asp-for="Username" class="validate"></label>
+									<input asp-for="Username" class="form-control white-text" />
+									<span asp-validation-for="Username" class="red-text text-accent-2"></span>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="input-field col s12 white-text">
+									<label asp-for="Password" class="validate"></label>
+									<input asp-for="Password" class="form-control white-text" />
+									<span asp-validation-for="Password" class="red-text text-accent-2"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-action">
+						<input type="submit" value="Log in" class="btn btn-primary" />
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 </div>
+
+@* <div class="row valign-wrapper">
+	<div class="col s10 card z-depth-5">
+		<form method="POST">
+			<div class="card-stacked">
+				<div class="card-content">
+					<h2>Login</h2>
+					<div class="row">
+						<div class="col">
+							<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+							<div class="row">
+								<div class="input-field col">
+									<label asp-for="Username" class="validate"></label>
+									<input asp-for="Username" class="form-control" />
+									<span asp-validation-for="Username" class="text-danger"></span>
+								</div>
+							</div>
+							
+							<div class="row">
+								<div class="input-field col">
+									<label asp-for="Password" class="validate"></label>
+									<input asp-for="Password" class="form-control" />
+									<span asp-validation-for="Password" class="text-danger"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-action">
+					<input type="submit" value="Log in" class="btn btn-primary" />
+				</div>
+			</div>
+		</form>
+	</div>
+</div> *@
+

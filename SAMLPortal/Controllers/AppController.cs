@@ -13,12 +13,11 @@ using SAMLPortal.Misc;
 
 namespace SAMLPortal.Controllers
 {
-	[Authorize]
 	[Route("App")]
+	[Authorize(Roles = UserRoles.Administrator)]
 	public class AppController : Controller
 	{
 		// GET: App
-		[Authorize(Roles = UserRoles.Administrator)]
 		public ActionResult Index()
 		{
 			SAMLPortalContext context = new SAMLPortalContext();
@@ -26,7 +25,6 @@ namespace SAMLPortal.Controllers
 		}
 
 		// GET: App/Details/5
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Details/{id}")]
 		public ActionResult Details(int id)
 		{
@@ -37,7 +35,6 @@ namespace SAMLPortal.Controllers
 
 		// GET: App/Create
 		[HttpGet]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Create")]
 		public ActionResult Create()
 		{
@@ -48,7 +45,6 @@ namespace SAMLPortal.Controllers
 		// Post: App/Create
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Create")]
 		public async Task<IActionResult> Create(App appli)
 		{
@@ -78,7 +74,6 @@ namespace SAMLPortal.Controllers
 
 		// GET: App/Edit/5
 		[AllowAnonymous]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Edit/{id}")]
 		public async Task<IActionResult> Edit(int? id)
 		{
@@ -99,7 +94,6 @@ namespace SAMLPortal.Controllers
 		// POST: App/Edit/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Edit/{id}")]
 		public async Task<IActionResult> EditPost(int? id)
 		{
@@ -138,7 +132,6 @@ namespace SAMLPortal.Controllers
 		}
 
 		// GET: App/Delete/5
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> Delete(int? id, bool? saveChangesError = false)
 		{
@@ -165,7 +158,6 @@ namespace SAMLPortal.Controllers
 		// POST: App/Delete/5
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("Delete/{id}")]
 		public async Task<IActionResult> DeleteConfirmed(int id)
 		{
@@ -192,7 +184,6 @@ namespace SAMLPortal.Controllers
 		// Post: App/VerifyMetadata
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		[Authorize(Roles = UserRoles.Administrator)]
 		[Route("VerifyMetadata")]
 		public async Task<IActionResult> VerifyMetadata(AppWithMandatoryFields app)
 		{

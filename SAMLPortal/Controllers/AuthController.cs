@@ -116,6 +116,10 @@ namespace SAMLPortal.Controllers
 							return Redirect("/");
 						}
 					}
+					else
+					{
+						ModelState.AddModelError(string.Empty, "Incorrect username or password.");
+					}
 				}
 				catch (Exception ex)
 				{

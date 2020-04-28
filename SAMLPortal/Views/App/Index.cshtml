@@ -6,55 +6,26 @@
 
 <h2>Apps</h2>
 
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@foreach (var item in Model)
+{
+	<div class="row">
+		<div class="col s8 m4">
+			<div class="card blue-grey darken-1 hoverable">
+				<div class="card-content white-text">
+					<span class="card-title">@item.Name</span>
+					<p>@item.Description</p>
+				</div>
+				<div class="card-action">
+					@Html.ActionLink("Edit", "Edit", new { id = item.Id })
+					@Html.ActionLink("Delete", "Delete", new { id = item.Id })
+				</div>
+			</div>
+		</div>
+	</div>
+}
 
-<table class="table">
-    <tr>
-        <th>
-            @Html.ActionLink("Name", "Index", new { sortOrder = ViewBag.NameSortParm, currentFilter = ViewBag.CurrentFilter })
-        </th>
-        <th>
-            First Name
-        </th>
-        <th></th>
-    </tr>
-
-
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-			<td>
-                @Html.DisplayFor(modelItem => item.Role)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Enabled)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Issuer)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MetadataURL)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SingleSignOnDestination)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SingleLogoutResponseDestination)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id = item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id = item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
-            </td>
-        </tr>
-    }
-
-</table>
+<div class="fixed-action-btn">
+	<a href='@Url.Action("Create", "App")' class="btn-floating btn-large red">
+		<i class="large material-icons">add</i>
+	</a>
+</div>

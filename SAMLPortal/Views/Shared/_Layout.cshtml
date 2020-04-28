@@ -1,9 +1,12 @@
+@using SAMLPortal.Misc;
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 	<meta charset="utf-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>@ViewData["Title"] - SAMLPortal</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 	<script type="module" src="~/dist/site.entry.js" defer></script>
 	<link rel="stylesheet" href="~/dist/site.css">
 </head>
@@ -13,24 +16,33 @@
 			<div class="nav-wrapper">
 				<div class="container">
 					<a class="brand-logo" asp-area="" asp-controller="Home" asp-action="Index">SAMLPortal</a>
-					<a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-					<ul class="right hide-on-med-and-down">
-						<li>
-							<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-						</li>
-						<li>
-							<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-						</li>
-					</ul>
+					@if (User.Identity.IsAuthenticated)
+					{
+						<a href="#" data-target="nav-mobile" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+						<ul class="right hide-on-med-and-down">
+							<li>
+								<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+							</li>
+
+							@if(User.IsInRole(UserRoles.Administrator))
+							{
+								<li>
+									<a asp-area="" asp-controller="App" asp-action="Index">Apps</a>
+								</li>
+							}
+
+							<li>
+								<a asp-area="" asp-controller="Auth" asp-action="Logout">Logout</a>
+							</li>
+
+						</ul>
+					}
 				</div>
 			</div>
 		</nav>
 		<ul class="sidenav" id="nav-mobile">
 			<li>
 				<a asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-			</li>
-			<li>
-				<a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
 			</li>
 		</ul>
 	</header>
@@ -40,13 +52,12 @@
 		</main>
 	</div>
 
-	<footer class="border-top footer text-muted">
+	@* <footer class="border-top footer text-muted">
 		<div class="container">
-			&copy; 2020 - SAMLPortal - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+			&copy; 2020 - SAMLPortal
 		</div>
-	</footer>
+	</footer> *@
 	<script type="module" src="~/dist/materialize_js.entry.js" defer></script>
-	<script src="~/dist/sp/sp.js" defer></script>
 	@RenderSection("Scripts", required: false)
 </body>
 </html>

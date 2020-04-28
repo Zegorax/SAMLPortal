@@ -7,7 +7,7 @@
 <h1>Create</h1>
 
 <h4>App</h4>
-<hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -79,14 +79,16 @@
                 <span asp-validation-for="MetadataURL" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="VerifyMetadata" class="btn btn-primary" />
+                <input type="submit" value="Verify Metadata" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
-<div>
-    <a asp-controller="Home" asp-action="Index">Back to List</a>
+<div class="fixed-action-btn">
+	<a href='@Url.Action("Index", "App")' class="btn-floating btn-large red">
+		<i class="large material-icons">arrow_back</i>
+	</a>
 </div>
 
 @section Scripts {

@@ -1,0 +1,26 @@
+@using SAMLPortal.Misc;
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>@ViewData["Title"] - SAMLPortal</title>
+	<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+	<script type="module" src="~/dist/site.entry.js" defer></script>
+	<link rel="stylesheet" href="~/dist/site.css">
+</head>
+<body>
+	<div class="container">
+		@RenderBody()
+	</div>
+
+	@* <footer class="border-top footer text-muted">
+		<div class="container">
+			&copy; 2020 - SAMLPortal
+		</div>
+	</footer> *@
+	<script type="module" src="~/dist/materialize_js.entry.js" defer></script>
+	@RenderSection("Scripts", required: false)
+</body>
+</html>
