@@ -40,8 +40,10 @@ namespace SAMLPortal
 			services.AddScoped<IAuthenticationService, LdapAuthenticationService>();
 			services.AddScoped<SetupAsyncActionFilter>();
 
+			GlobalSettings.InitSettingsFromEnvironment();
+
 			services.AddDbContext<SAMLPortalContext>(options =>
-				options.UseMySql("Server=localhost; Database=samlportal; User=root; Password=root;",
+				options.UseMySql("server=" + Environment.GetEnvironmentVariable("SP_MYSQL_HOST") + ";port=" + Environment.GetEnvironmentVariable("SP_MYSQL_PORT") + ";user=" + Environment.GetEnvironmentVariable("SP_MYSQL_USER") + ";password=" + Environment.GetEnvironmentVariable("SP_MYSQL_PASS") + ";database=" + Environment.GetEnvironmentVariable("SP_MYSQL_DB"),
 					mysqlOptions =>
 					mysqlOptions.ServerVersion(new ServerVersion(new Version(10, 4, 6), ServerType.MySql))
 				)
@@ -80,13 +82,13 @@ namespace SAMLPortal
 			}
 
 			app.UseStaticFiles();
-
 			app.UseRouting();
 
-			app.UseAuthentication();
-			app.UseAuthorization();
+			// Middlewares goes under this comment
 
 			app.UseSetupAssistantMiddleware();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

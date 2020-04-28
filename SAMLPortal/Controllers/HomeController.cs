@@ -16,18 +16,13 @@ namespace SAMLPortal.Controllers
 	[Route("")]
 	public class HomeController : Controller
 	{
-		[AllowAnonymous]
+		[Authorize(Roles = UserRoles.User)]
 		[Route("")]
 		public IActionResult Index()
 		{
-			return View();
-		}
-
-		[Authorize(Roles = UserRoles.User)]
-		[Route("Privacy")]
-		public IActionResult Privacy()
-		{
-			ClaimsPrincipal currentUser = this.User;
+			var userRoles = this.User.FindAll("membership").Select(r => r.Value).ToList();
+			var allowedApps = new SAMLPortalContext().App.Where(app => userRoles.Contains(app.Role)).ToList();
+			ViewBag.allowedApps = allowedApps;
 			return View();
 		}
 

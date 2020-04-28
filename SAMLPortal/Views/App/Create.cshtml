@@ -1,0 +1,96 @@
+﻿@model SAMLPortal.Models.App
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>App</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="Role" class="control-label"></label>
+                <input asp-for="Role" class="form-control" />
+                <span asp-validation-for="Role" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Enabled" /> @Html.DisplayNameFor(model => model.Enabled)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetadataURL" class="control-label"></label>
+                <input asp-for="MetadataURL" class="form-control" />
+                <span asp-validation-for="MetadataURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Issuer" class="control-label"></label>
+                <input asp-for="Issuer" class="form-control" />
+                <span asp-validation-for="Issuer" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SingleSignOnDestination" class="control-label"></label>
+                <input asp-for="SingleSignOnDestination" class="form-control" />
+                <span asp-validation-for="SingleSignOnDestination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SingleLogoutResponseDestination" class="control-label"></label>
+                <input asp-for="SingleLogoutResponseDestination" class="form-control" />
+                <span asp-validation-for="SingleLogoutResponseDestination" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+		<form asp-action="VerifyMetadata">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Enabled" /> @Html.DisplayNameFor(model => model.Enabled)
+                </label>
+            </div>
+            <div class="form-group">
+                <label asp-for="MetadataURL" class="control-label"></label>
+                <input asp-for="MetadataURL" class="form-control" />
+                <span asp-validation-for="MetadataURL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Verify Metadata" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="fixed-action-btn">
+	<a href='@Url.Action("Index", "App")' class="btn-floating btn-large red">
+		<i class="large material-icons">arrow_back</i>
+	</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

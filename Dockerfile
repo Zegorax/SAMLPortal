@@ -7,6 +7,8 @@ RUN dotnet restore
 
 # Copy everything else and build
 COPY . ./
+RUN apt-get update && apt-get install npm -y
+RUN cd SAMLPortal/Client && npm install
 RUN dotnet publish -c Release -o out
 
 # Build runtime image

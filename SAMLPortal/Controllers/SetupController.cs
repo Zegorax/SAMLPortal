@@ -10,6 +10,7 @@ using MySql.Data.MySqlClient;
 using Microsoft.EntityFrameworkCore;
 using CountryData.Standard;
 using Novell.Directory.Ldap;
+using System.Data;
 
 namespace SAMLPortal.Controllers
 {
@@ -74,22 +75,29 @@ namespace SAMLPortal.Controllers
 					connection.Open();
 
 					// If everything goes well
-					var fileName = GlobalSettings.Get("CONFIG_FILE");
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_HOST", model.MySQLHost);
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_PORT", model.MySQLPort.ToString());
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_DB", model.MySQLDatabaseName);
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_USER", model.MySQLUser);
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_PASS", model.MySQLPassword);
+					if (connection.State == ConnectionState.Open)
+					{
+						var fileName = GlobalSettings.Get("CONFIG_FILE");
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_HOST", model.MySQLHost);
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_PORT", model.MySQLPort.ToString());
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_DB", model.MySQLDatabaseName);
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_USER", model.MySQLUser);
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_PASS", model.MySQLPassword);
 
-					GlobalSettings.InitSettingsFromEnvironment();
+						GlobalSettings.InitSettingsFromEnvironment();
 
-					SAMLPortalContext context = new SAMLPortalContext();
-					context.Database.Migrate();
+						SAMLPortalContext context = new SAMLPortalContext();
+						context.Database.Migrate();
 
-					// MySQL Step is complete
-					Helpers.ReplaceEnvVariableInFile(fileName, "SP_CONFIG_SETUPASSISTANT_STEP", "2");
-					GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "2");
-					return Redirect("2");
+						// MySQL Step is complete
+						Helpers.ReplaceEnvVariableInFile(fileName, "SP_CONFIG_SETUPASSISTANT_STEP", "2");
+						GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "2");
+						return Redirect("2");
+					}
+					else
+					{
+						ModelState.AddModelError(string.Empty, "An unknown error occurred. Please try again.");
+					}
 				}
 				catch (Exception ex) when (ex is MySqlException)
 				{

@@ -586,3 +586,5 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/visualstudiocode
 
 # End of https://www.gitignore.io/api/macos,windows,csharp,visualstudio
+
+*/wwwroot/dist/

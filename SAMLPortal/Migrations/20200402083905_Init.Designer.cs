@@ -41,9 +41,6 @@ namespace SAMLPortal.Migrations
 					.IsRequired()
 					.HasColumnType("longtext CHARACTER SET utf8mb4");
 
-				b.Property<string>("SignatureValidationCertificate")
-					.HasColumnType("longtext CHARACTER SET utf8mb4");
-
 				b.Property<string>("SingleLogoutResponseDestination")
 					.HasColumnType("longtext CHARACTER SET utf8mb4");
 

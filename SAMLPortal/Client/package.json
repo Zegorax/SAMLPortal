@@ -1,0 +1,26 @@
+{
+	"name": "SAMLPortal",
+	"description": "SAML Manager.",
+	"repository": "https://github.com/Zegorax/SAMLPortal",
+	"license": "MIT",
+	"version": "0.2.0",
+	"dependencies": {
+		"jquery": "^3.4.1",
+		"jquery-validation": "^1.19.1",
+		"jquery-validation-unobtrusive": "^3.2.11",
+		"materialize-css": "^1.0.0-rc.2",
+		"popper.js": "^1.16.1"
+	},
+	"devDependencies": {
+		"webpack": "^4.42.1",
+		"webpack-cli": "^3.3.11",
+		"css-loader": "^3.4.2",
+		"mini-css-extract-plugin": "^0.9.0",
+		"file-loader": "^6.0.0",
+		"url-loader": "^4.0.0"
+	},
+	"scripts": {
+		"build": "webpack",
+		"watch": "webpack --watch"
+	}
+}

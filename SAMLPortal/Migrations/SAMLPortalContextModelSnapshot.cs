@@ -30,6 +30,7 @@ namespace SAMLPortal.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Issuer")
+                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("MetadataURL")
@@ -39,13 +40,16 @@ namespace SAMLPortal.Migrations
                         .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("SignatureValidationCertificate")
+                    b.Property<string>("Roles")
+                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SingleLogoutResponseDestination")
+                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.Property<string>("SingleSignOnDestination")
+                        .IsRequired()
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
                     b.HasKey("Id");

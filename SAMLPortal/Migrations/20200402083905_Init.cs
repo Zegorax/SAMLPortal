@@ -19,8 +19,7 @@ namespace SAMLPortal.Migrations
 						MetadataURL = table.Column<string>(nullable: true),
 						Issuer = table.Column<string>(nullable: true),
 						SingleSignOnDestination = table.Column<string>(nullable: true),
-						SingleLogoutResponseDestination = table.Column<string>(nullable: true),
-						SignatureValidationCertificate = table.Column<string>(nullable: true)
+						SingleLogoutResponseDestination = table.Column<string>(nullable: true)
 				},
 				constraints : table =>
 				{

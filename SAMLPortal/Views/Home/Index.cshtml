@@ -1,16 +1,30 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+	List<App> allowedApps = ViewBag.allowedApps;
     
 }
 
 @using System.Security.Claims;
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Welcome, @this.User.FindFirst(ClaimTypes.Name).Value</h1>
     @if (User.Identity.IsAuthenticated)
     {
-        <div>Hello, @this.User.FindFirst(ClaimTypes.Name).Value</div>
-        <div>Your memberships : @this.User.FindAll("membership").Select(c => c.Value).ToList().ToString()</div>
+		@foreach (var app in allowedApps)
+		{
+			<div class="row">
+				<div class="col s6 m3">
+					<div class="card blue-grey darken-1 hoverable">
+						<div class="card-content white-text">
+							<span class="card-title">@app.Name</span>
+							<p>@app.Description</p>
+						</div>
+						<div class="card-action">
+							<a href="/Auth/StartRequest/@app.Id">Open</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		}
     }
 </div>

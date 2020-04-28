@@ -1,3 +1,4 @@
+using System.Data;
 using System;
 using System.ComponentModel.DataAnnotations;
 
@@ -17,10 +18,18 @@ namespace SAMLPortal.Models
 		[Required]
 		public virtual bool Enabled { get; set; }
 
-		public virtual string MetadataURL { get; set; }
+		public virtual string MetadataURL { get; set; } = "";
+
+		[Required]
+		public virtual string Role { get; set; }
+
+		[Required]
 		public virtual string Issuer { get; set; }
+
+		[Required]
 		public virtual Uri SingleSignOnDestination { get; set; }
+
+		[Required]
 		public virtual Uri SingleLogoutResponseDestination { get; set; }
-		public virtual string SignatureValidationCertificate { get; set; }
 	}
 }

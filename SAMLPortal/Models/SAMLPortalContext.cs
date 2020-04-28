@@ -2,6 +2,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using SAMLPortal.Models;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace SAMLPortal.Models
 {
@@ -29,6 +30,16 @@ namespace SAMLPortal.Models
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			OnModelCreatingPartial(modelBuilder);
+
+			// Will come later when adding multiple role to one app
+			// var stringArrayConverter = new ValueConverter<string[], string>(
+			// v => string.Join(";", v),
+			// v => v.Split(";", StringSplitOptions.RemoveEmptyEntries));
+
+			// modelBuilder.Entity<App>()
+			// 	.Property(e => e.Roles)
+			// 	.HasConversion(stringArrayConverter);
+
 		}
 	}
 }
