@@ -59,7 +59,7 @@ namespace SAMLPortal.Controllers
 					}
 					context.Add(appli);
 					await context.SaveChangesAsync();
-					return Redirect("/");
+					return RedirectToAction("Index", "App");
 				}
 			}
 			catch (DbUpdateException /* ex */)
