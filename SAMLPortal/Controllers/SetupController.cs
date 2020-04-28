@@ -75,7 +75,7 @@ namespace SAMLPortal.Controllers
 					connection.Open();
 
 					// If everything goes well
-					if(connection.State == ConnectionState.Open)
+					if (connection.State == ConnectionState.Open)
 					{
 						var fileName = GlobalSettings.Get("CONFIG_FILE");
 						Helpers.ReplaceEnvVariableInFile(fileName, "SP_MYSQL_HOST", model.MySQLHost);

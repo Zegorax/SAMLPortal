@@ -5,7 +5,8 @@ module.exports = {
 	entry: {
 		site: './src/js/site.js',
 		materialize_js: './src/js/materialize_js.js',
-		validation: './src/js/validation.js'
+		validation: './src/js/validation.js',
+		setup: './src/js/setup.js'
 	},
 	output: {
 		filename: '[name].entry.js',
