@@ -16,7 +16,7 @@ namespace SAMLPortal.Middlewares
 			_next = next;
 		}
 
-		public Task Invoke(HttpContext httpContext)
+		public async Task Invoke(HttpContext httpContext)
 		{
 			var configurationStep = GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP");
 
@@ -29,13 +29,20 @@ namespace SAMLPortal.Middlewares
 					{
 						httpContext.Response.Redirect("/Setup/" + configurationStep);
 					}
+					else
+					{
+						await _next(httpContext);
+					}
 				}
 				else
 				{
 					httpContext.Response.Redirect("/Setup/" + configurationStep);
 				}
 			}
-			return _next(httpContext);
+			else
+			{
+				await _next(httpContext);
+			}
 		}
 	}
 

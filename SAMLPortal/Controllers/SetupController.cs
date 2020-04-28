@@ -352,7 +352,7 @@ namespace SAMLPortal.Controllers
 		/// <returns></returns>
 		private static bool CheckStep(int step)
 		{
-			if (step - GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") <= 1)
+			if (step - GlobalSettings.GetInt("CONFIG_SETUPASSISTANT_STEP") < 1)
 			{
 				return true;
 			}
