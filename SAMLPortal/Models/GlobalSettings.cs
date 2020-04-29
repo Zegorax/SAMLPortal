@@ -120,9 +120,6 @@ namespace SAMLPortal.Models
 		{
 			_appSettings.Clear();
 
-			// Debug Only:
-			_appSettings.Add("CONFIG_PATH", "/tmp/SAMLPortal");
-
 			IDictionary environment = Environment.GetEnvironmentVariables();
 			foreach (var key in environment.Keys)
 			{

@@ -13,6 +13,20 @@ The bridge between LDAP and SAML with RBAC !
 SAMLPortal is a web app designed for companies using a lot of self-hosted services. It act as a SAML IdP (Identity Provider) for your apps. It also doubles as welcome portal for users by presenting apps and categories for which the user has access to.
 Every app can be linked to one or more LDAP group, and can be used to initiate a SAML request. The app will only be displayed if the user is part of the LDAP group linked to it. 
 
+## How to install
+Install Docker and docker-compose
+Create a new directory and copy docker-compose.yml inside of it.
+
+Open a new Terminal inside your previously created directory and run :
+`docker-compose up -d`
+
+You should have SAMLPortal accessible to [http://localhost:8081](http://localhost:8081) and a PHPLDAPAdmin at [http://localhost:8082](http://localhost:8082)
+
+The memberOf overlay is also required on OpenLDAP. You can activate by followint [this tutorial](https://tylersguides.com/guides/openldap-memberof-overlay/)
+To get a bash inside the LDAP container, run : `docker-compose exec openldap bash`
+
+To stop everything, run : docker-compose down
+
 ## Collaboration
 Isses and pull requests are welcome!
 
@@ -20,10 +34,10 @@ Isses and pull requests are welcome!
 First, install .NET Core EF
 `dotnet tool install --global dotnet-ef`
 
-Copy `.env.example` to `.env` and fill your required environment variables.
-
 Update your database with
 `dotnet ef database update`
+
+Create a directory and export the environment variable `SP_CONFIG_PATH` to this directory
 
 ## VSCode extensions
 -   .NET Core Add Reference
