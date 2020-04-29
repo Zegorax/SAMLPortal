@@ -22,7 +22,7 @@ Open a new Terminal inside your previously created directory and run :
 
 You should have SAMLPortal accessible to [http://localhost:8081](http://localhost:8081) and a PHPLDAPAdmin at [http://localhost:8082](http://localhost:8082)
 
-The memberOf overlay is also required on OpenLDAP. You can activate by followint [this tutorial](https://tylersguides.com/guides/openldap-memberof-overlay/)
+The memberOf overlay is also required on OpenLDAP. You can activate it by following [this tutorial](https://tylersguides.com/guides/openldap-memberof-overlay/)
 To get a bash inside the LDAP container, run : `docker-compose exec openldap bash`
 
 To stop everything, run : docker-compose down
