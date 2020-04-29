@@ -5,29 +5,8 @@ services:
     restart: always
     ports:
       - 8081:80
-    environment:
-      # This environment will disapear in future releases of SAMLPortal and will be replaced by step-by-step configurator
-      SP_LDAP_Host: openldap
-      SP_LDAP_Port: 389
-      SP_LDAP_BindDN: cn=admin,dc=saml,dc=portal
-      SP_LDAP_BindPass: helloSAMLPortal
-      SP_LDAP_SearchBase: dc=saml,dc=portal
-      SP_LDAP_AdminFilter: (&(memberOf=cn=YOUR-CN-HERE)(uid={0}))
-      SP_LDAP_UsersFilter: (&(memberOf=cn=YOUR-CN-HERE)(uid={0}))
-      SP_LDAP_Attr_MemberOf: memberOf
-      SP_LDAP_Attr_DisplayName: cn
-      SP_LDAP_Attr_UID: uid
-      SP_LDAP_Attr_Mail: mail
-      SP_CONFIG_CompanyName: SAMLPortal
-      SP_CONFIG_CompanyCountryCode: CH
-      SP_CONFIG_CompanySubject: SAMLPortal
-      SP_CONFIG_URL: saml.portal
-      SP_MYSQL_HOST: db
-      SP_MYSQL_PORT: 3306
-      SP_MYSQL_DB: samlportal
-      SP_MYSQL_USER: samlportal
-      SP_MYSQL_PASS: samlportal
-      SP_FORCE_ENV_REPOPUL: 1
+    volumes:
+      - ./SAMLPortal/data:/data
 
   db:
     image: mysql:latest
@@ -84,3 +63,12 @@ services:
     #   - 389:389
     domainname: "saml.portal" # important: same as hostname
     hostname: "saml.portal"
+
+  phpldapadmin:
+   image: osixia/phpldapadmin:latest
+   container_name: phpldapadmin
+   environment:
+     PHPLDAPADMIN_LDAP_HOSTS: "openldap"
+     PHPLDAPADMIN_HTTPS: "false"
+   ports:
+     - 8082:80
