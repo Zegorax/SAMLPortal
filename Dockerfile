@@ -15,5 +15,6 @@ RUN dotnet publish -c Release -o out
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /app
 COPY --from=build-env /app/out .
-RUN mkdir /data && export SP_CONFIG_PATH=/data
+RUN mkdir /data
+ENV SP_CONFIG_PATH=/data
 ENTRYPOINT ["dotnet", "SAMLPortal.dll"]
