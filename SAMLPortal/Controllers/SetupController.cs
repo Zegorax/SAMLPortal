@@ -338,6 +338,7 @@ namespace SAMLPortal.Controllers
 
 				Helpers.ReplaceEnvVariableInFile(GlobalSettings.Get("CONFIG_FILE"), "SP_CONFIG_SETUPASSISTANT_STEP", "6");
 				GlobalSettings.Store("CONFIG_SETUPASSISTANT_STEP", "6");
+				GlobalSettings.GenerateSigningCertificate();
 
 				return Redirect("/");
 			}
