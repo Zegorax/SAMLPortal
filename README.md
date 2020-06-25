@@ -31,15 +31,13 @@ To stop everything, run : docker-compose down
 Isses and pull requests are welcome!
 
 ## Development environment installation
-First, install .NET Core EF
-`dotnet tool install --global dotnet-ef`
+1. Install Visual Studio Code and the Remote-Containers extension
+2. Install [Docker](https://www.docker.com/products/docker-desktop)
+3. Clone the project
+4. Confirm the popup from Remote-Containers
+5. Everything is ready, nothing to install on your host machine
 
-Update your database with
-`dotnet ef database update`
-
-Create a directory and export the environment variable `SP_CONFIG_PATH` to this directory
-
-## VSCode extensions
+## VSCode recommended extensions
 -   .NET Core Add Reference
 -   .NET Core Extension Pack
 -   .NET Core Snippet Pack
