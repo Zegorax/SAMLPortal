@@ -31,30 +31,9 @@ To stop everything, run : docker-compose down
 Isses and pull requests are welcome!
 
 ## Development environment installation
-1.	Install Visual Studio Code and the Remote-Containers extension
-2.	Install [Docker](https://www.docker.com/products/docker-desktop)
-3.	Clone the project
-4.	Confirm the popup from Remote-Containers
-5.	Everything is ready, nothing to install on your host machine
-
-## VSCode recommended extensions
--   .NET Core Add Reference
--   .NET Core Extension Pack
--   .NET Core Snippet Pack
--   .NET Core Test Explorer
--   .NET Core Tools
--   ASP.NET Core Switcher
--   ASP.NET Helper
--   Better Comments
--   C#
--   C# Extensions
--   C# FixFormat
--   C# XML Documentation Comments
--   EditorConfig for VS Code
--   Essential ASP.NET Core 3 Snippets
--   gitignore
--   NuGet Package Manager
--   Path Intellisense
--   Super Sharp
--   Test Explorer UI
--   XML
+1. Install Visual Studio Code
+2. Install [Docker](https://www.docker.com/products/docker-desktop)
+3. Clone the project and open it with VSCode
+4. Confirm the popup from VSCode recommended extensions
+5. Confirm the popup from Remote-Containers
+6. Everything is ready, nothing to install on your host machine

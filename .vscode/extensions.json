@@ -19,6 +19,7 @@
 		"christian-kohler.path-intellisense",
 		"craigthomas.supersharp",
 		"hbenl.vscode-test-explorer",
-		"redhat.vscode-xml"
+		"redhat.vscode-xml",
+		"ms-vscode-remote.remote-containers"
 	]
 }
