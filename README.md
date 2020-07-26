@@ -31,32 +31,9 @@ To stop everything, run : docker-compose down
 Isses and pull requests are welcome!
 
 ## Development environment installation
-First, install .NET Core EF
-`dotnet tool install --global dotnet-ef`
-
-Update your database with
-`dotnet ef database update`
-
-Create a directory and export the environment variable `SP_CONFIG_PATH` to this directory
-
-## VSCode extensions
--   .NET Core Add Reference
--   .NET Core Extension Pack
--   .NET Core Snippet Pack
--   .NET Core Test Explorer
--   .NET Core Tools
--   ASP.NET Core Switcher
--   ASP.NET Helper
--   Better Comments
--   C#
--   C# Extensions
--   C# FixFormat
--   C# XML Documentation Comments
--   EditorConfig for VS Code
--   Essential ASP.NET Core 3 Snippets
--   gitignore
--   NuGet Package Manager
--   Path Intellisense
--   Super Sharp
--   Test Explorer UI
--   XML
+1. Install Visual Studio Code
+2. Install [Docker](https://www.docker.com/products/docker-desktop)
+3. Clone the project and open it with VSCode
+4. Confirm the popup from VSCode recommended extensions
+5. Confirm the popup from Remote-Containers
+6. Everything is ready, nothing to install on your host machine

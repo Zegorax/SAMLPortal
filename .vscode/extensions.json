@@ -1,0 +1,25 @@
+{
+	"recommendations": [
+		"adrianwilczynski.add-reference",
+		"doggy8088.netcore-extension-pack",
+		"adrianwilczynski.asp-net-core-snippet-pack",
+		"formulahendry.dotnet-test-explorer",
+		"formulahendry.dotnet",
+		"adrianwilczynski.asp-net-core-switcher",
+		"schneiderpat.aspnet-helper",
+		"aaron-bond.better-comments",
+		"ms-dotnettools.csharp",
+		"jchannon.csharpextensions",
+		"awwsky.csharpfixformatfixed",
+		"k--kato.docomment",
+		"editorconfig.editorconfig",
+		"doggy8088.netcore-snippets",
+		"codezombiech.gitignore",
+		"jmrog.vscode-nuget-package-manager",
+		"christian-kohler.path-intellisense",
+		"craigthomas.supersharp",
+		"hbenl.vscode-test-explorer",
+		"redhat.vscode-xml",
+		"ms-vscode-remote.remote-containers"
+	]
+}
